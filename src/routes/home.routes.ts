@@ -1,9 +1,10 @@
 import { Router, Request, Response } from 'express';
 
-const router = Router();
+const homeRouter: Router = Router();
 
-router.get('/', (req: Request, res: Response): void => {
-    res.send('Welcome to subscriptions system!');
+homeRouter.route('/')
+    .get((req: Request, res: Response): void => {
+        res.send('Welcome to subscriptions system!');
 });
 
-export default router;
+export { homeRouter };
