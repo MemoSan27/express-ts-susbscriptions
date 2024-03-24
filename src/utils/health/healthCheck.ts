@@ -6,7 +6,7 @@ import { verifyDB } from "./verifyDB";
 import { verifyWeb } from "./verifyWeb";
 
 export const healthCheck = () => {
-    cron.schedule('*/300 * * * * *', async () => {
+    cron.schedule('*/5 * * * *', async () => {
         console.log(colors.bgWhite.bold('Running health check...'));
         let client: MongoClient | undefined; 
         try {
