@@ -4,8 +4,11 @@ import { customerRouter } from './customer.routes';
 import { downloadRouter } from './download.routes';
 import { gameRouter } from './game.routes';
 import { memebershipRouter } from './membership.routes';
+import { healtRouter } from './health.routes';
 
 const router: Router = Router();
+
+router.use('/health', healtRouter);
 
 router.use('/', homeRouter);
 router.use('/v1/customers', customerRouter);
