@@ -10,7 +10,7 @@ export const healthCheckHandler = async (req: Request, res: Response): Promise<v
             res.status(500).json({ error: 'Health check error' });
         }
     } catch (error) {
-        console.error('Error en el health check:', error);
+        console.error('Error on health check:', error);
         res.status(500).json({ error: 'Error on health check controller' });
     }
 };

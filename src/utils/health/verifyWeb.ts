@@ -1,5 +1,6 @@
 import axios, { AxiosError } from 'axios';
 import dotenv from 'dotenv';
+import colors from 'colors';
 
 // Cargar las variables de entorno desde el archivo .env
 dotenv.config();
@@ -10,7 +11,7 @@ export const verifyWeb = async (): Promise<void> => {
     const url = `${appUrl}:${appPort}/health`;
     try {
         await axios.get(url);
-        console.log(`Route ${url} is working success`);
+        console.log(colors.bgGreen.bold(`Route ${url} is working success`));
     } catch (error) {
         const axiosError = error as AxiosError;
         if (axiosError.response) {
