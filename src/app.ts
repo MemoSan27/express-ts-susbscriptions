@@ -9,7 +9,7 @@ import dbConnection from './configs/database/mongo.conn';
 dotenv.config();
 
 const app = express(); 
-const env = process.env.APP_ENV || 'dev';
+const env: string = process.env.APP_ENV || 'dev';
 
 app.use(cors()); 
 app.use(helmet()); 
@@ -23,7 +23,7 @@ dbConnection().then(db => {
     app.use('/', router);
 }).catch(error => {
     console.error('Error connecting to MongoDB:', error);
-    process.exit(1); // Termina el proceso si hay un error de conexión a la base de datos
+    process.exit(1); 
 });
 
 export default app;

@@ -1,12 +1,12 @@
-import { MongoClient } from 'mongodb';
+import { MongoClient, Db } from 'mongodb';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const MONGO_URI = process.env.MONGO_URI || '';
-const MONGO_DB = process.env.MONGO_DB || '';
+const MONGO_URI: string = process.env.MONGO_URI || '';
+const MONGO_DB: string = process.env.MONGO_DB || '';
 
-async function dbConnection() {
+async function dbConnection(): Promise<Db> {
     const client = new MongoClient(MONGO_URI);
 
     try {
