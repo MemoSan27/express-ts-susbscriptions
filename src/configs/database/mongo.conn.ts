@@ -1,5 +1,6 @@
 import { MongoClient, Db } from 'mongodb';
 import dotenv from 'dotenv';
+import colors from 'colors';
 
 dotenv.config();
 
@@ -11,14 +12,14 @@ async function dbConnection(): Promise<Db> {
 
     try {
         await client.connect();
-        console.log('Connected success to MongoDB');
+        console.log(colors.bgWhite.bold('Connected success to MongoDB'));
 
         const db = client.db(MONGO_DB);
 
         return db;
 
     } catch (err) {
-        console.error('Error connecting to MongoDB:', err);
+        console.error(colors.bgRed.bold('Error connecting to MongoDB:'), err);
         throw err; 
     }
 }
