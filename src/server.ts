@@ -7,7 +7,6 @@ const PORT: number = Number(process.env.APP_PORT) || 8080;
 
 const main = async (): Promise<void> => {
     try {
-        healthCheck();
         app.listen(PORT);
         console.log(colors.bgGreen.bold(`Server running on port ${PORT}`));
     } catch (error) {
