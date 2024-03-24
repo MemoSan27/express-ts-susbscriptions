@@ -2,9 +2,9 @@ import { Router, Request, Response } from 'express';
 import { mockMiddleware } from '../utils/mocks/middlewares/mockMiddleware';
 
 
-const homeRouter = Router();
+const customerRouter: Router = Router();
 
-homeRouter.route('/')
-    .get(mockMiddleware('Welcome to subscriptions system!'));
+customerRouter.route('/')
+    .get(mockMiddleware('GET desde /customers'));
 
-export default homeRouter;
+export {customerRouter};

@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import homeRouter from './routes';
+import { router } from './routes';
 import dotenv from 'dotenv';
 import dbConnection from './configs/database/mongo.conn';
 
@@ -18,7 +18,7 @@ app.use(express.json());
 
 dbConnection().then(db => {
     app.locals.db = db;
-    app.use('/', homeRouter);
+    app.use('/', router);
 }).catch(error => {
     console.error('Error connecting to MongoDB:', error);
     process.exit(1); 
