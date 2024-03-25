@@ -4,7 +4,7 @@ import { Membership } from '../models/Membership';
 
 export const createMembershipService = async (membership: Membership): Promise<ObjectId | null> => {
     try {
-        const db = await dbConnection(); 
+        const db: Db = await dbConnection(); 
         const result = await db.collection<Membership>('memberships').insertOne(membership);
         return result.insertedId ? new ObjectId(result.insertedId) : null;
     } catch (error) {

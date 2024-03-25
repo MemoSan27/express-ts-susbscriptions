@@ -9,7 +9,7 @@ const MONGO_DB: string = process.env.MONGO_DB || '';
 
 let cachedDb: Db | null = null;
 
-async function dbConnection(): Promise<Db> {
+export const dbConnection = async(): Promise<Db> => {
     if (cachedDb) {
         return cachedDb;
     }

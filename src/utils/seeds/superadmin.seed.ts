@@ -26,7 +26,7 @@ async function seed() {
       name: process.env.SEED_ADMIN_NAME,
       email: process.env.SEED_ADMIN_EMAIL,
       password: hashedPassword,
-      rol: 'admin'
+      role: 'admin'
     });
 
     console.log('Super admin created success:', result.insertedId);
