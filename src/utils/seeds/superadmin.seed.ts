@@ -1,6 +1,9 @@
 import { Db } from 'mongodb';
 import bcrypt from 'bcrypt';
 import dbConnection from '../../configs/database/mongo.conn';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 async function seed() {
   const db: Db = await dbConnection();
@@ -12,13 +15,18 @@ async function seed() {
       return;
     }
 
-    const hashedPassword = await bcrypt.hash('super27', 10);
+    const seedAdminPassword = process.env.SEED_ADMIN_PASSWORD;
+    if (seedAdminPassword === undefined) {
+      throw new Error('Seed admin password is not defined in environment variables.');
+    }
+
+    const hashedPassword = await bcrypt.hash(seedAdminPassword, 10);
 
     const result = await db.collection('admins').insertOne({
-      name: 'Super Admin',
-      email: 'superadmin@memo.com',
+      name: process.env.SEED_ADMIN_NAME,
+      email: process.env.SEED_ADMIN_EMAIL,
       password: hashedPassword,
-      rol: 'superadmin'
+      rol: 'admin'
     });
 
     console.log('Super admin created success:', result.insertedId);
