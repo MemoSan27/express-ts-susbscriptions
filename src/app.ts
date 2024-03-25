@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import { router } from './routes';
 import dotenv from 'dotenv';
 import dbConnection from './configs/database/mongo.conn';
+import { morganMiddleware } from './middlewares/morgan.middleware';
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ app.use(cors());
 app.use(helmet()); 
 app.use(morgan(env)); 
 app.use(express.json());
+app.use(morganMiddleware);
 
 dbConnection().then(db => {
     app.locals.db = db;
