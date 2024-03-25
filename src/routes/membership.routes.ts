@@ -1,12 +1,13 @@
 import { Router, Request, Response } from 'express';
 import { mockMiddleware } from '../utils/mocks/middlewares/mockMiddleware';
+import { createMembershipController } from '../controllers/membership.controller';
 
 
 const memebershipRouter: Router = Router();
 
 memebershipRouter.route('/')
     .get(mockMiddleware('GET desde /memberships'))
-    .post(mockMiddleware('POST desde /memberships'))
+    .post(createMembershipController)
 
 memebershipRouter.route('/:id')
     .get(mockMiddleware('GET ONE desde /memberships'))
