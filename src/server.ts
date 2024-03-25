@@ -1,3 +1,4 @@
+import './utils/scripts/cronJob';
 import app from './app';
 import colors from 'colors';
 
