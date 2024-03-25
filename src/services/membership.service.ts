@@ -4,11 +4,11 @@ import { Membership } from '../models/Membership';
 
 export const createMembershipService = async (membership: Membership): Promise<ObjectId | null> => {
     try {
-        const db = await dbConnection(); // Espera la resolución de la promesa
+        const db = await dbConnection(); 
         const result = await db.collection<Membership>('memberships').insertOne(membership);
         return result.insertedId ? new ObjectId(result.insertedId) : null;
     } catch (error) {
-        console.error('Error al crear la membresía:', error);
+        console.error('Error creating membership:', error);
         return null;
     }
 }

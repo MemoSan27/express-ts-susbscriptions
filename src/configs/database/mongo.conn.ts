@@ -7,7 +7,7 @@ dotenv.config();
 const MONGO_URI: string = process.env.MONGO_URI || '';
 const MONGO_DB: string = process.env.MONGO_DB || '';
 
-let cachedDb: Db | null = null; // Variable para almacenar la conexión a la base de datos en caché
+let cachedDb: Db | null = null;
 
 async function dbConnection(): Promise<Db> {
     if (cachedDb) {
