@@ -1,4 +1,3 @@
-import winston from 'winston';
 import morgan from 'morgan';
 import { appFileLogger } from '../utils/scripts/logger';
 
