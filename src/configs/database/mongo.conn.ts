@@ -12,7 +12,7 @@ async function dbConnection(): Promise<Db> {
 
     try {
         await client.connect();
-        console.log(colors.bgWhite.bold('Connected success to MongoDB'));
+        console.log(colors.bgGreen.bold('Connected success to MongoDB'));
 
         const db = client.db(MONGO_DB);
 
