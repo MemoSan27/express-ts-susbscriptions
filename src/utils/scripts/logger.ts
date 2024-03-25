@@ -25,3 +25,9 @@ export const healthFileLogger = winston.createLogger({
     new winston.transports.File({ filename: 'src/utils/logs/health-file.log', format: fileFormat }),
   ],
 });
+
+export const requestFileLogger = winston.createLogger({
+  transports: [
+    new winston.transports.File({ filename: 'src/utils/logs/request-file.log', format: fileFormat }),
+  ],
+});
