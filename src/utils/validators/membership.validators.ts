@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import Joi, { ValidationResult } from 'joi';
 
-export const membershipSchema = Joi.object({
+const membershipSchema = Joi.object({
     _id: Joi.string(),
     type: Joi.string().required(),
     price: Joi.number(),
