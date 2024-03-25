@@ -7,7 +7,6 @@ export const checkHealthController = async(req: Request, res: Response): Promise
          const isDatabaseHealthy = await HealthService.checkDatabaseHealth();
         
     if (isDatabaseHealthy) {
-        console.log(colors.bgBlue.bold('API is Healthy'));
         res.status(200).send(colors.bgBlue.bold('API is Healthy'));
       } else {
         console.log(colors.bgRed.bold('API is NOT Healthy, please call an admin'));
