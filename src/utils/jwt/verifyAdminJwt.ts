@@ -20,7 +20,7 @@ const verifyAdminJwt = (req: Request, res: Response, next: NextFunction) => {
         process.env.TOKEN_SECRET as string,
         (err: any, decoded: any) => {
             if (err) return res.sendStatus(403);
-            (req as AuthenticatedRequest).user = decoded.user; // Establece 'user' en la solicitud
+            (req as AuthenticatedRequest).user = decoded.user; 
             next();
         }
     );

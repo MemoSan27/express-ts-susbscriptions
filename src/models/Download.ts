@@ -1,5 +1,7 @@
+import { ObjectId } from "mongodb";
+
 export interface Download{
-    _id?: string;
+    _id?: ObjectId;
     idCustomer: string;
     idGame: string;
     downloadDate: Date;

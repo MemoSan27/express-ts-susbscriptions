@@ -1,4 +1,4 @@
-import { Db, ObjectId } from 'mongodb';
+import { Db, ObjectId, Filter } from 'mongodb';
 import dbConnection from '../configs/database/mongo.conn';
 import { Membership } from '../models/Membership';
 
@@ -12,3 +12,25 @@ export const createMembershipService = async (membership: Membership): Promise<O
         return null;
     }
 }
+
+export const updateMembershipService = async (membershipId: string, updatedMembershipData: Partial<Membership>): Promise<boolean> => {
+    try {
+        const db: Db = await dbConnection(); 
+        
+        if (!ObjectId.isValid(membershipId)) {
+            throw new Error('Invalid membership ID');
+        }
+        
+        const filter: Filter<Membership> = { _id: new ObjectId(membershipId) }; 
+        
+        const result = await db.collection<Membership>('memberships').updateOne(
+            filter, 
+            { $set: updatedMembershipData } 
+        );
+
+        return result.modifiedCount === 1; 
+    } catch (error) {
+        console.error('Error updating membership:', error);
+        return false;
+    }
+};
