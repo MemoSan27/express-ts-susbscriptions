@@ -21,7 +21,7 @@ const verifyAdminJwt = (req: Request, res: Response, next: NextFunction) => {
         process.env.TOKEN_SECRET as string,
         (err: any, decoded: any) => {
             if (err) return res.sendStatus(403);
-            const { user, userId } = decoded; // Decodificar user y userId de la carga útil del token
+            const { user, userId } = decoded; 
             (req as AuthenticatedRequest).user = user; 
             (req as AuthenticatedRequest).userId = userId; 
             next();
