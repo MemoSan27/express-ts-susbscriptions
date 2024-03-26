@@ -1,6 +1,22 @@
 import { Request, Response } from 'express';
-import { createMembershipService, updateMembershipService } from '../services/membership.service';
+import { createMembershipService, getAllMembershipsService, updateMembershipService } from '../services/membership.service';
 import { Membership } from '../models/Membership';
+
+//Get all membership info controller
+export const getAllMembershipsController = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const memberships = await getAllMembershipsService();
+
+        if (memberships !== null) {
+            res.status(200).json(memberships); 
+        } else {
+            res.status(500).json({ message: 'Error getting memberships' }); 
+        }
+    } catch (error) {
+        console.error('Error getting memberships:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
 
 //Create a new membership controller with admin jwt validation
 export const createMembershipController = async(

@@ -2,6 +2,22 @@ import { Db, ObjectId, Filter } from 'mongodb';
 import dbConnection from '../configs/database/mongo.conn';
 import { Membership } from '../models/Membership';
 
+//Get all memberships info service
+export const getAllMembershipsService = async (): Promise<Membership[] | null> => {
+    try {
+        const db: Db = await dbConnection(); 
+
+        // Obtener todos los memberships de la colección
+        const memberships = await db.collection<Membership>('memberships').find().toArray();
+
+        return memberships; // Devolver la lista de memberships
+    } catch (error) {
+        console.error('Error getting memberships:', error);
+        return null;
+    }
+}
+
+
 //Create new membership service
 export const createMembershipService = async (membership: Membership): Promise<ObjectId | null> => {
     try {
