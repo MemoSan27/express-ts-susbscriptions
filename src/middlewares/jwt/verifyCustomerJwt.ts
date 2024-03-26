@@ -4,12 +4,12 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-export interface AuthenticatedRequest extends Request {
-    user?: any;
-    userId?: any; 
+export interface AuthenticatedCustomerRequest extends Request {
+    user?: any; 
+    userId?: any;
 }
 
-const verifyAdminJwt = (req: Request, res: Response, next: NextFunction) => {
+const verifyCustomerJwt = (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization || req.headers.Authorization;
     if (!authHeader) return res.sendStatus(401);
 
@@ -21,12 +21,12 @@ const verifyAdminJwt = (req: Request, res: Response, next: NextFunction) => {
         process.env.TOKEN_SECRET as string,
         (err: any, decoded: any) => {
             if (err) return res.sendStatus(403);
-            const { user, userId } = decoded; // Decodificar user y userId de la carga útil del token
-            (req as AuthenticatedRequest).user = user; 
-            (req as AuthenticatedRequest).userId = userId; 
+            const { user, userId } = decoded; 
+            (req as AuthenticatedCustomerRequest).user = user; 
+            (req as AuthenticatedCustomerRequest).userId = userId; 
             next();
         }
     );
 };
 
-export default verifyAdminJwt;
+export default verifyCustomerJwt;

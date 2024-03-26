@@ -4,7 +4,7 @@ import Joi, { ValidationResult } from 'joi';
 const membershipSchema = Joi.object({
     _id: Joi.string(),
     type: Joi.string().required(),
-    price: Joi.number(),
+    price: Joi.number().required(),
 });
 
 export const validateMembership = (
