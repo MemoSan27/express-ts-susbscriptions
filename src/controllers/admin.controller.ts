@@ -3,12 +3,13 @@ import { AuthService, loginAdminService } from '../services/admin.service';
 import dbConnection from '../configs/database/mongo.conn';
 import { AuthenticatedRequest } from '../utils/jwt/verifyAdminJwt';
 
-
+//Get logged administrator controller
 export const getLoggedAdminController = async(req: AuthenticatedRequest, res: Response) => {
   const user = req.user;
   return res.json(user)
 }
 
+//Login administrator controller
 export const loginAdminController = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 

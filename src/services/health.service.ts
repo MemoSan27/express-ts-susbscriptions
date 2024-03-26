@@ -2,7 +2,8 @@ import { Db } from 'mongodb';
 import dbConnection from '../configs/database/mongo.conn';
 import colors from 'colors';
 
-export async function checkDatabaseHealth(): Promise<boolean> {
+//Service to check health of database
+export const checkDatabaseHealth = async(): Promise<boolean> => {
     try {
         const db: Db = await dbConnection();
 

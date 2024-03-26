@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
 import { mockMiddleware } from '../utils/mocks/middlewares/mockMiddleware';
 import { createMembershipController, updateMembershipController } from '../controllers/membership.controller';
 import { validateMembership } from '../utils/validators/membership.validators';

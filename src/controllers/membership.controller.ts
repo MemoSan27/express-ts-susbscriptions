@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { createMembershipService, updateMembershipService } from '../services/membership.service';
 import { Membership } from '../models/Membership';
 
+//Create a new membership controller with admin jwt validation
 export const createMembershipController = async(
     req: Request, res: Response): Promise<void> => {
         
@@ -13,6 +14,7 @@ export const createMembershipController = async(
         });
 };
 
+//Update by id a membership controller with admin jwt validation  
 export const updateMembershipController = async (req: Request, res: Response): Promise<void> => {
     try {
         const membershipId: string = req.params.id; 

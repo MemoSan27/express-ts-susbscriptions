@@ -1,5 +1,4 @@
-import { Router, Request, Response } from 'express';
-import { mockMiddleware } from '../utils/mocks/middlewares/mockMiddleware';
+import { Router } from 'express';
 import { checkHealthController } from '../controllers/health.controller';
 
 

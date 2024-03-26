@@ -2,6 +2,7 @@ import { Db, ObjectId, Filter } from 'mongodb';
 import dbConnection from '../configs/database/mongo.conn';
 import { Membership } from '../models/Membership';
 
+//Create new membership service
 export const createMembershipService = async (membership: Membership): Promise<ObjectId | null> => {
     try {
         const db: Db = await dbConnection(); 
@@ -13,6 +14,7 @@ export const createMembershipService = async (membership: Membership): Promise<O
     }
 }
 
+//Update membership service
 export const updateMembershipService = async (membershipId: string, updatedMembershipData: Partial<Membership>): Promise<boolean> => {
     try {
         const db: Db = await dbConnection(); 
