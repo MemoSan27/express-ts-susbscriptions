@@ -1,25 +1,32 @@
 import { MongoClient, Db } from 'mongodb';
 import dotenv from 'dotenv';
+import colors from 'colors';
 
 dotenv.config();
 
 const MONGO_URI: string = process.env.MONGO_URI || '';
 const MONGO_DB: string = process.env.MONGO_DB || '';
 
-async function dbConnection(): Promise<Db> {
+let cachedDb: Db | null = null;
+
+export const dbConnection = async(): Promise<Db> => {
+    if (cachedDb) {
+        return cachedDb;
+    }
+
     const client = new MongoClient(MONGO_URI);
 
     try {
         await client.connect();
-        console.log('Connected success to MongoDB');
+        console.log(colors.bgGreen.bold('Connected successfully to MongoDB'));
 
         const db = client.db(MONGO_DB);
+        cachedDb = db; 
 
         return db;
-
     } catch (err) {
-        console.error('Error connecting to MongoDB:', err);
-        throw err; 
+        console.error(colors.bgRed.bold('Error connecting to MongoDB:'), err);
+        throw err;
     }
 }
 

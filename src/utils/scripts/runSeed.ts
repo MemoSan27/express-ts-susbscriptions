@@ -1,0 +1,2 @@
+import '../seeds/superadmin.seed'; 
+

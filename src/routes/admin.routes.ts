@@ -1,22 +1,24 @@
 import { Router, Request, Response } from 'express';
 import { mockMiddleware } from '../utils/mocks/middlewares/mockMiddleware';
+import { getLoggedAdminController, loginAdminController } from '../controllers/admin.controller';
+import verifyAdminJwt from '../utils/jwt/verifyAdminJwt';
 
 
-const customerRouter: Router = Router();
+const adminRouter: Router = Router();
 
-customerRouter.route('/')
+adminRouter.route('/')
     .get(mockMiddleware('GET desde /customers'))
     .post(mockMiddleware('POST desde /customers'))
 
-customerRouter.route('/login')
-    .post(mockMiddleware('Login a la aplicacion'))
+adminRouter.route('/login')
+    .post(loginAdminController)
 
-customerRouter.route('/me')
-    .get(mockMiddleware('GET desde /customers/me'))
+adminRouter.route('/me')
+    .get(verifyAdminJwt, getLoggedAdminController)
 
-customerRouter.route('/:id')
+adminRouter.route('/:id')
     .get(mockMiddleware('GET ONE desde /customers'))    
     .delete(mockMiddleware('DELETE desde /customers'))    
     .patch(mockMiddleware('PATCH desde /customers'))    
 
-export {customerRouter};
+export {adminRouter};
