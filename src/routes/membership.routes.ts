@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { mockMiddleware } from '../utils/mocks/middlewares/mockMiddleware';
-import { createMembershipController, getAllMembershipsController, updateMembershipController } from '../controllers/membership.controller';
+import { createMembershipController, getAllMembershipsController, getMembershipByIdController, updateMembershipController } from '../controllers/membership.controller';
 import { validateMembership } from '../middlewares/validators/membership.validators';
 import verifyAdminJwt from '../middlewares/jwt/verifyAdminJwt';
 
@@ -12,7 +12,7 @@ memebershipRouter.route('/')
     .post(validateMembership, verifyAdminJwt, createMembershipController)
 
 memebershipRouter.route('/:id')
-    .get(mockMiddleware('GET ONE desde /memberships'))
+    .get(getMembershipByIdController)
     .delete(mockMiddleware('DELETE desde /memberships'))
     .patch(validateMembership, verifyAdminJwt, updateMembershipController)
 

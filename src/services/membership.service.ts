@@ -8,10 +8,9 @@ export const getAllMembershipsService = async (): Promise<Membership[] | null> =
         const db: Db = await dbConnection(); 
         
         const memberships = await db.collection<Membership>('memberships').find().toArray();
-
         return memberships; 
     } catch (error) {
-        console.error('Error getting memberships:', error);
+        console.error('Error getting memberships: ', error);
         return null;
     }
 }
@@ -21,10 +20,30 @@ export const getAllMembershipsService = async (): Promise<Membership[] | null> =
 export const createMembershipService = async (membership: Membership): Promise<ObjectId | null> => {
     try {
         const db: Db = await dbConnection(); 
+
         const result = await db.collection<Membership>('memberships').insertOne(membership);
         return result.insertedId ? new ObjectId(result.insertedId) : null;
     } catch (error) {
-        console.error('Error creating membership:', error);
+        console.error('Error creating membership: ', error);
+        return null;
+    }
+}
+
+//Get a single membership by id service
+export const getMembershipByIdService = async (membershipId: string): Promise<Membership | null> => {
+    try {
+        const db: Db = await dbConnection();
+
+        if (!ObjectId.isValid(membershipId)) {
+            throw new Error('Invalid membership ID');
+        }
+
+        const filter = { _id: new ObjectId(membershipId) };
+
+        const membership = await db.collection<Membership>('memberships').findOne(filter);
+        return membership; 
+    } catch (error) {
+        console.error('Error getting membership by ID: ', error);
         return null;
     }
 }
@@ -47,7 +66,7 @@ export const updateMembershipService = async (membershipId: string, updatedMembe
 
         return result.modifiedCount === 1; 
     } catch (error) {
-        console.error('Error updating membership:', error);
+        console.error('Error updating membership: ', error);
         return false;
     }
 };
