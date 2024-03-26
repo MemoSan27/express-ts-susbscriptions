@@ -6,11 +6,10 @@ import { Membership } from '../models/Membership';
 export const getAllMembershipsService = async (): Promise<Membership[] | null> => {
     try {
         const db: Db = await dbConnection(); 
-
-        // Obtener todos los memberships de la colección
+        
         const memberships = await db.collection<Membership>('memberships').find().toArray();
 
-        return memberships; // Devolver la lista de memberships
+        return memberships; 
     } catch (error) {
         console.error('Error getting memberships:', error);
         return null;
