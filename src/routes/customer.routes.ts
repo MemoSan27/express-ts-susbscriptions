@@ -17,7 +17,7 @@ customerRouter.route('/login')
 customerRouter.route('/me')
     .get(verifyCustomerJwt, getLoggedCustomerController)
 
-customerRouter.route('/change')
+customerRouter.route('/auth-chpass')
     .post(verifyCustomerJwt, changePasswordController)    
 
 customerRouter.route('/:id')

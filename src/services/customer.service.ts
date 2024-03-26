@@ -67,7 +67,7 @@ export const loginCustomerService = (db: Db): AuthService => {
     return { login };
 };
 
-//Change customer password service
+//Change authenticated customer password service
 export const changePasswordService = async (userId: ObjectId, oldPassword: string, newPassword: string): Promise<boolean> => {
     try {
         const db: Db = await dbConnection();

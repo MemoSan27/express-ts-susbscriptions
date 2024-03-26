@@ -71,7 +71,7 @@ export const loginCustomerController = async (req: Request, res: Response) => {
 };
 
 
-//Change customer password controller
+//Change authenticated customer password controller
 export const changePasswordController = async (req: AuthenticatedCustomerRequest, res: Response) => {
   const userId = new ObjectId(req.userId); // Transformar userId a ObjectId
   const { oldPassword, newPassword } = req.body;
@@ -80,7 +80,7 @@ export const changePasswordController = async (req: AuthenticatedCustomerRequest
       const success = await changePasswordService(userId, oldPassword, newPassword);
 
       if (success) {
-          return res.status(200).json({ message: 'Password changed success' });
+          return res.status(200).json({ message: 'Password changed success.' });
       } else {
           return res.status(400).json({ message: 'Invalid current password.' });
       }
