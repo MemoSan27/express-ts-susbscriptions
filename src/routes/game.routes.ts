@@ -1,16 +1,17 @@
 import { Router } from 'express';
-import { mockMiddleware } from '../utils/mocks/middlewares/mockMiddleware';
-
+import { createGameController, deleteGameByIdController, getAllGamesController, getGameByIdController, updateGameController } from '../controllers/game.controller';
+import { validateGame } from '../middlewares/validators/game.validators';
+import verifyAdminJwt from '../middlewares/jwt/verifyAdminJwt';
 
 const gameRouter: Router = Router();
 
 gameRouter.route('/')
-    .get(mockMiddleware('GET desde /games'))
-    .post(mockMiddleware('POST desde /games'))
+    .get(getAllGamesController)
+    .post(validateGame, verifyAdminJwt, createGameController);
 
 gameRouter.route('/:id')
-    .get(mockMiddleware('GET ONE desde /games'))
-    .delete(mockMiddleware('DELETE desde /games'))
-    .patch(mockMiddleware('PATCH desde /games'))
+    .get(getGameByIdController)
+    .delete(verifyAdminJwt, deleteGameByIdController)
+    .patch(validateGame, verifyAdminJwt, updateGameController);
 
-export {gameRouter};
+export { gameRouter };
