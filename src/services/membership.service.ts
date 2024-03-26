@@ -48,6 +48,25 @@ export const getMembershipByIdService = async (membershipId: string): Promise<Me
     }
 }
 
+//Delete a membership service
+export const deleteMembershipByIdService = async (membershipId: string): Promise<boolean> => {
+    try {
+        const db: Db = await dbConnection();
+
+        if (!ObjectId.isValid(membershipId)) {
+            throw new Error('Invalid membership ID');
+        }
+
+        const filter = { _id: new ObjectId(membershipId) };
+
+        const result = await db.collection('memberships').deleteOne(filter);
+        return result.deletedCount === 1;
+    } catch (error) {
+        console.error('Error deleting membership:', error);
+        return false;
+    }
+}
+
 //Update membership service
 export const updateMembershipService = async (membershipId: string, updatedMembershipData: Partial<Membership>): Promise<boolean> => {
     try {
