@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { AuthService, loginAdminService } from '../services/admin.service';
 import dbConnection from '../configs/database/mongo.conn';
-import { AuthenticatedRequest } from '../utils/jwt/verifyAdminJwt';
+import { AuthenticatedRequest } from '../middlewares/jwt/verifyAdminJwt';
 
 //Get logged administrator controller
 export const getLoggedAdminController = async(req: AuthenticatedRequest, res: Response) => {

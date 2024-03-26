@@ -5,7 +5,7 @@ import morgan from 'morgan';
 import { router } from './routes';
 import dotenv from 'dotenv';
 import dbConnection from './configs/database/mongo.conn';
-import { morganMiddleware } from './middlewares/morgan.middleware';
+import { morganMiddleware } from './middlewares/morgan/morgan.middleware';
 
 dotenv.config();
 
