@@ -6,6 +6,7 @@ dotenv.config();
 
 export interface AuthenticatedCustomerRequest extends Request {
     user?: any; 
+    userId?: any;
 }
 
 const verifyCustomerJwt = (req: Request, res: Response, next: NextFunction) => {
@@ -20,7 +21,9 @@ const verifyCustomerJwt = (req: Request, res: Response, next: NextFunction) => {
         process.env.TOKEN_SECRET as string,
         (err: any, decoded: any) => {
             if (err) return res.sendStatus(403);
-            (req as AuthenticatedCustomerRequest).user = decoded.user; 
+            const { user, userId } = decoded; 
+            (req as AuthenticatedCustomerRequest).user = user; 
+            (req as AuthenticatedCustomerRequest).userId = userId; 
             next();
         }
     );

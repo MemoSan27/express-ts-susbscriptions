@@ -55,8 +55,8 @@ export const loginCustomerService = (db: Db): AuthService => {
         const tokenSecret = process.env.TOKEN_SECRET!;
 
         const token = jwt.sign({
+            userId: customer._id,
             user: customer.name + ' ' + customer.lastname,
-            email: customer.email,
             role: 'customer', 
         },
             tokenSecret,
@@ -65,4 +65,33 @@ export const loginCustomerService = (db: Db): AuthService => {
     };
 
     return { login };
+};
+
+//Change customer password service
+export const changePasswordService = async (userId: ObjectId, oldPassword: string, newPassword: string): Promise<boolean> => {
+    try {
+        const db: Db = await dbConnection();
+        const customers = db.collection('customers');
+
+        const user = await customers.findOne({ _id: userId });
+
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        const passwordMatch = await bcrypt.compare(oldPassword, user.password);
+
+        if (!passwordMatch) {
+            return false;
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        await customers.updateOne({ _id: userId }, { $set: { password: hashedPassword } });
+
+        return true;
+    } catch (error) {
+        console.error('Error in process: ', error);
+        throw error;
+    }
 };

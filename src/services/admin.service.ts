@@ -27,9 +27,9 @@ export const loginAdminService = (db: Db): AuthService => {
       const tokenSecret = process.env.TOKEN_SECRET!;
   
       const token = jwt.sign({ 
+        userId: admin._id,
         user: admin.name,
-        email: admin.email, 
-        role: admin.role },
+        },
         tokenSecret,
         { expiresIn: '2d' });
       return token;

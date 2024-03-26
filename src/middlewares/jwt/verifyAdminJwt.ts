@@ -5,7 +5,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export interface AuthenticatedRequest extends Request {
-    user?: any; 
+    user?: any;
+    userId?: any; 
 }
 
 const verifyAdminJwt = (req: Request, res: Response, next: NextFunction) => {
@@ -20,7 +21,9 @@ const verifyAdminJwt = (req: Request, res: Response, next: NextFunction) => {
         process.env.TOKEN_SECRET as string,
         (err: any, decoded: any) => {
             if (err) return res.sendStatus(403);
-            (req as AuthenticatedRequest).user = decoded.user; 
+            const { user, userId } = decoded; // Decodificar user y userId de la carga útil del token
+            (req as AuthenticatedRequest).user = user; 
+            (req as AuthenticatedRequest).userId = userId; 
             next();
         }
     );

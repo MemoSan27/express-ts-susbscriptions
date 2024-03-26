@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { mockMiddleware } from '../utils/mocks/middlewares/mockMiddleware';
 import { validateCustomer } from '../middlewares/validators/customer.validators';
-import { createCustomerController, getLoggedCustomerController, loginCustomerController } from '../controllers/customer.controller';
+import { changePasswordController, createCustomerController, getLoggedCustomerController, loginCustomerController } from '../controllers/customer.controller';
 import verifyCustomerJwt from '../middlewares/jwt/verifyCustomerJwt';
 
 
@@ -16,6 +16,9 @@ customerRouter.route('/login')
 
 customerRouter.route('/me')
     .get(verifyCustomerJwt, getLoggedCustomerController)
+
+customerRouter.route('/change')
+    .post(verifyCustomerJwt, changePasswordController)    
 
 customerRouter.route('/:id')
     .get(mockMiddleware('GET ONE desde /customers'))    
