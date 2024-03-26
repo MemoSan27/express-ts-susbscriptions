@@ -3,15 +3,11 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Admininst } from '../models/Admin';
 import dotenv from 'dotenv';
+import { AuthService } from '../utils/interfaces/auth.interface';
 
 dotenv.config();
 
-//Interface about login data
-export interface AuthService {
-    login(email: string, password: string): Promise<string | null>;
-}
-
-//Login Service
+//Admin Login Service
 export const loginAdminService = (db: Db): AuthService => {
     const admins: Collection<Admininst> = db.collection<Admininst>('admins');
   
@@ -28,7 +24,7 @@ export const loginAdminService = (db: Db): AuthService => {
         return null;
       }
 
-      const tokenSecret = process.env.TOKEN_SECRET || '32as26a26d2sa32d3as2d32a3sd1';
+      const tokenSecret = process.env.TOKEN_SECRET!;
   
       const token = jwt.sign({ 
         user: admin.name,

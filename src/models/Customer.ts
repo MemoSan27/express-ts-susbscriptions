@@ -6,6 +6,5 @@ export interface Customer{
     lastname: string;
     email: string;
     password: string;
-    active: boolean;
     membership: string;
 }

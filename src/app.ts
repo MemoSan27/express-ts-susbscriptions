@@ -11,7 +11,6 @@ dotenv.config();
 
 const app = express(); 
 const env: string = process.env.APP_ENV || 'dev';
-const dbConnected = false;
 
 app.use(cors()); 
 app.use(helmet()); 

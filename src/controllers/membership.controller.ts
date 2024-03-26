@@ -24,15 +24,27 @@ export const getAllMembershipsController = async (req: Request, res: Response): 
 }
 
 //Create a new membership with admin jwt validation controller
-export const createMembershipController = async(
-    req: Request, res: Response): Promise<void> => {
-        
+export const createMembershipController = async (req: Request, res: Response): Promise<void> => {
+    try {
         const membership: Membership = req.body;
-        await createMembershipService(membership);
-        res.status(201).json({
-            message: 'Type of membership created sucess',
-            membership,
-        });
+        const membershipId = await createMembershipService(membership);
+        
+        if (membershipId) {
+            const response = {
+                message: 'Membership created successfully',
+                membership: {
+                    _id: membershipId,
+                    ...membership
+                }
+            };
+            res.status(201).json(response);
+        } else {
+            res.status(500).json({ message: 'Failed to create membership' });
+        }
+    } catch (error) {
+        console.error('Error creating membership:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 };
 
 //Get a single membership by id controller
