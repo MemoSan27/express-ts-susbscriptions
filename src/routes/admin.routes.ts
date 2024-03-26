@@ -1,7 +1,7 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
 import { mockMiddleware } from '../utils/mocks/middlewares/mockMiddleware';
 import { getLoggedAdminController, loginAdminController } from '../controllers/admin.controller';
-import verifyAdminJwt from '../utils/jwt/verifyAdminJwt';
+import verifyAdminJwt from '../middlewares/jwt/verifyAdminJwt';
 
 
 const adminRouter: Router = Router();

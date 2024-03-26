@@ -1,5 +1,8 @@
+import { ObjectId } from "mongodb";
+
 export interface Membership {
-    _id?: string;
+    _id?: ObjectId;
+    userId?: string;
     type: string;
     price: number;
 }

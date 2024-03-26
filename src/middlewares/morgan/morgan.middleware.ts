@@ -1,9 +1,9 @@
 import morgan from 'morgan';
-import { requestFileLogger } from '../utils/scripts/logger';
+import { requestFileLogger } from '../../utils/scripts/logger';
 
 const morganStream = {
   write: (message: string) => {
-    requestFileLogger.info(message.trim()); // Redirige los registros de Morgan al archivo de registro
+    requestFileLogger.info(message.trim());
   }
 };
 

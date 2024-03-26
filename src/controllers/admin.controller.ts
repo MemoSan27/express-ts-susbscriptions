@@ -1,14 +1,15 @@
 import { Request, Response } from 'express';
 import { AuthService, loginAdminService } from '../services/admin.service';
 import dbConnection from '../configs/database/mongo.conn';
-import { AuthenticatedRequest } from '../utils/jwt/verifyAdminJwt';
+import { AuthenticatedRequest } from '../middlewares/jwt/verifyAdminJwt';
 
-
+//Get logged administrator controller
 export const getLoggedAdminController = async(req: AuthenticatedRequest, res: Response) => {
   const user = req.user;
   return res.json(user)
 }
 
+//Login administrator controller
 export const loginAdminController = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
@@ -20,7 +21,7 @@ export const loginAdminController = async (req: Request, res: Response) => {
     const token = await authService.login(email, password);
 
     if (!token) {
-      return res.status(401).json({ message: 'Credenciales inválidas' });
+      return res.status(401).json({ message: 'Invalid Credentials' });
     }
 
     res.status(200).json({ token });

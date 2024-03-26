@@ -6,10 +6,12 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+//Interface about login data
 export interface AuthService {
     login(email: string, password: string): Promise<string | null>;
 }
 
+//Login Service
 export const loginAdminService = (db: Db): AuthService => {
     const admins: Collection<Admininst> = db.collection<Admininst>('admins');
   
