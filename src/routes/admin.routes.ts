@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { mockMiddleware } from '../utils/mocks/middlewares/mockMiddleware';
-import { loginAdminController } from '../controllers/admin.controller';
+import { getLoggedAdminController, loginAdminController } from '../controllers/admin.controller';
+import verifyAdminJwt from '../utils/jwt/verifyAdminJwt';
 
 
 const adminRouter: Router = Router();
@@ -13,7 +14,7 @@ adminRouter.route('/login')
     .post(loginAdminController)
 
 adminRouter.route('/me')
-    .get(mockMiddleware('GET desde /customers/me'))
+    .get(verifyAdminJwt, getLoggedAdminController)
 
 adminRouter.route('/:id')
     .get(mockMiddleware('GET ONE desde /customers'))    

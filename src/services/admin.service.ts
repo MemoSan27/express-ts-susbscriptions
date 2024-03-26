@@ -29,6 +29,7 @@ export const loginAdminService = (db: Db): AuthService => {
       const tokenSecret = process.env.TOKEN_SECRET || '32as26a26d2sa32d3as2d32a3sd1';
   
       const token = jwt.sign({ 
+        user: admin.name,
         email: admin.email, 
         role: admin.role },
         tokenSecret,
