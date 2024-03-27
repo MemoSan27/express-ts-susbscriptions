@@ -8,7 +8,13 @@ import { createGameService,
 import { Game } from '../models/Game';
 
 // Get all games controller
-export const getAllGamesController = async (req: Request, res: Response): Promise<void> => {
+export const getAllGamesController = async(
+    
+    req: Request, 
+    
+    res: Response
+    
+    ): Promise<void> => {
     try {
         const games = await getAllGamesService();
         
@@ -25,21 +31,40 @@ export const getAllGamesController = async (req: Request, res: Response): Promis
 
 // Create a new game controller
 export const createGameController = async(
-    req: Request, res: Response): Promise<void> => {
-        
+    req: Request, 
+    res: Response
+    ): Promise<void> => {
+    try {
         const game: Game = req.body;
-        await createGameService(game);
-        res.status(201).json({
-            message: 'Game created successfully',
-            game,
-        });
+        const gameId = await createGameService(game);
+        
+        if (gameId) {
+            const response = {
+                message: 'Game created successfully',
+                game: {
+                    _id: gameId,
+                    ...game
+                }
+            };
+            res.status(201).json(response);
+        } else {
+            res.status(500).json({ message: 'Failed to create game' });
+        }
+    } catch (error) {
+        console.error('Error creating game:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 };
 
 // Get a single game by ID controller
-export const getGameByIdController = async (req: Request, res: Response): Promise<void> => {
+export const getGameByIdController = async(
+    req: Request, 
+    res: Response
+    ): Promise<void> => {
     try {
         const gameId: string = req.params.id;
         const game = await getGameByIdService(gameId);
+
         if (game) {
             res.status(200).json(game);
         } else {
@@ -52,10 +77,12 @@ export const getGameByIdController = async (req: Request, res: Response): Promis
 }
 
 // Delete a game by ID controller
-export const deleteGameByIdController = async (req: Request, res: Response): Promise<void> => {
+export const deleteGameByIdController = async(
+    req: Request, 
+    res: Response
+    ): Promise<void> => {
     try {
         const gameId: string = req.params.id;
-
         const deleted = await deleteGameByIdService(gameId);
 
         if (deleted) {
@@ -70,7 +97,10 @@ export const deleteGameByIdController = async (req: Request, res: Response): Pro
 }
 
 // Update a game by ID controller 
-export const updateGameController = async (req: Request, res: Response): Promise<void> => {
+export const updateGameController = async(
+    req: Request, 
+    res: Response
+    ): Promise<void> => {
     try {
         const gameId: string = req.params.id; 
         const updatedGameData: Partial<Game> = req.body; 
