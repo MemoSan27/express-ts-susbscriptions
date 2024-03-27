@@ -7,7 +7,7 @@ const customerSchema = Joi.object({
     lastname: Joi.string().required(),
     email: Joi.string().email().required(),
     password: Joi.string().required(),
-    membership: Joi.string(),
+    membershipId: Joi.string().required(),
 });
 
 export const validateCustomer = (
