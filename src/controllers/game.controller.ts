@@ -65,10 +65,10 @@ export const getGameByIdController = async(
         if (game) {
             res.status(200).json(game);
         } else {
-            res.status(404).json({ message: 'Game not found' });
+            res.status(404).json({ message: 'Download not found' });
         }
     } catch (error) {
-        console.error('Error getting the game: ', error);
+        console.error('Error getting the download: ', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 }
