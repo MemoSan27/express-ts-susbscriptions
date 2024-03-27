@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { mockMiddleware } from '../utils/mocks/middlewares/mockMiddleware';
 import { validateCustomer } from '../middlewares/validators/customer.validators';
-import { changePasswordController, createCustomerController, getAllCustomersController, getCustomerByIdController, getLoggedCustomerController, loginCustomerController, updateNameAndLastnameController } from '../controllers/customer.controller';
+import { changePasswordController, createCustomerController, deleteCustomerByIdController, getAllCustomersController, getCustomerByIdController, getLoggedCustomerController, loginCustomerController, updateNameAndLastnameController } from '../controllers/customer.controller';
 import verifyCustomerJwt from '../middlewares/jwt/verifyCustomerJwt';
 import verifyAdminJwt from '../middlewares/jwt/verifyAdminJwt';
 
@@ -23,7 +23,7 @@ customerRouter.route('/auth-chpass')
 
 customerRouter.route('/:id')
     .get(verifyAdminJwt, getCustomerByIdController)    
-    .delete(mockMiddleware('DELETE desde /customers'))    
+    .delete(verifyAdminJwt, deleteCustomerByIdController)    
     .patch(verifyAdminJwt, updateNameAndLastnameController)    
 
 export {customerRouter};

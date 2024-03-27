@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { changePasswordService, checkExistingEmailService, createCustomerService, getAllCustomersService, getCustomerByIdService, loginCustomerService, updateNameAndLastnameService } from '../services/customer.service';
+import { changePasswordService, checkExistingEmailService, createCustomerService, deleteCustomerByIdService, getAllCustomersService, getCustomerByIdService, loginCustomerService, updateNameAndLastnameService } from '../services/customer.service';
 import { Customer } from '../models/Customer';
 import bcrypt from 'bcrypt'
 import dbConnection from '../configs/database/mongo.conn';
@@ -85,6 +85,26 @@ export const getCustomerByIdController = async (req: AuthenticatedRequest, res: 
         }
     } catch (error) {
         console.error('Error getting the customer: ', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+// Delete a customer by ID by an authorized admin controller
+export const deleteCustomerByIdController = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const customerId: string = req.params.id;
+
+        const deleted = await deleteCustomerByIdService(customerId);
+
+        console.log(customerId)
+
+        if (deleted) {
+            res.status(200).json({ message: 'Customer deleted successfully' });
+        } else {
+            res.status(404).json({ message: 'Customer not found or not deleted' });
+        }
+    } catch (error) {
+        console.error('Error deleting customer:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 }

@@ -52,6 +52,7 @@ export const getCustomerByIdService = async (customerId: string): Promise<Custom
         return null;
     }
 }
+
 //Service that checks if an email exist in database
 export const checkExistingEmailService = async (email: string): Promise<boolean> => {
     try {
@@ -65,6 +66,25 @@ export const checkExistingEmailService = async (email: string): Promise<boolean>
         return true; // Devuelve true para manejar el caso de error
     }
 };
+
+//Delete a customer by ID by an authorized admin
+export const deleteCustomerByIdService = async (customerId: string): Promise<boolean> => {
+    try {
+        const db: Db = await dbConnection();
+
+        if (!ObjectId.isValid(customerId)) {
+            throw new Error('Invalid customer ID');
+        }
+
+        const filter = { _id: new ObjectId(customerId) };
+        const result = await db.collection<Customer>('customers').deleteOne(filter);
+
+        return result.deletedCount === 1;
+    } catch (error) {
+        console.error('Error deleting customer:', error);
+        return false;
+    }
+}
 
 //Update just name or lastname service with administrator assitance
 export const updateNameAndLastnameService = async (userId: string, name: string, lastname: string): Promise<boolean> => {
