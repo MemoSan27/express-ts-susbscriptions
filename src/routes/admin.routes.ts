@@ -1,5 +1,4 @@
 import { Router } from 'express';
-/* import { validateAdmin } from '../middlewares/validators/admin.validators'; */
 import { changePasswordController, 
     createAdminController, 
     deleteAdminByIdController, 
@@ -9,12 +8,13 @@ import { changePasswordController,
     updateNameAndLastnameController, 
     getLoggedAdminController } from '../controllers/admin.controller';
 import verifyAdminJwt from '../middlewares/jwt/verifyAdminJwt';
+import { validateAdmin } from '../middlewares/validators/admin.validators';
 
 const adminRouter: Router = Router();
 
 adminRouter.route('/')
     .get(verifyAdminJwt, getAllAdminsController)
-    .post(verifyAdminJwt, createAdminController);
+    .post(validateAdmin, verifyAdminJwt, createAdminController);
 
 adminRouter.route('/login')
     .post(loginAdminController);
@@ -28,6 +28,6 @@ adminRouter.route('/auth-chpass')
 adminRouter.route('/:id')
     .get(verifyAdminJwt, getAdminByIdController)
     .delete(verifyAdminJwt, deleteAdminByIdController)
-    .patch(verifyAdminJwt, updateNameAndLastnameController);
+    .patch(validateAdmin, verifyAdminJwt, updateNameAndLastnameController);
 
 export { adminRouter };
