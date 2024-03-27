@@ -44,7 +44,7 @@ export const updateNameAndLastnameService = async (userId: string, name: string,
             throw new Error('Invalid user ID');
         }
 
-        const filter: Filter<Customer> = { _id: new ObjectId(userId) }; // Convierte el userId en un ObjectId
+        const filter: Filter<Customer> = { _id: new ObjectId(userId) }; 
        
 
         const result = await db.collection<Customer>('customers').updateOne(

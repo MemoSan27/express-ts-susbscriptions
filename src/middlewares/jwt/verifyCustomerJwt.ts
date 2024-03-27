@@ -23,7 +23,7 @@ const verifyCustomerJwt = (req: Request, res: Response, next: NextFunction) => {
         (err: any, decoded: any) => {
             if (err) return res.sendStatus(403);
             const { user, userId, role } = decoded; 
-            if (role !== 'customer') return res.sendStatus(403); // Verifica el rol
+            if (role !== 'customer') return res.sendStatus(403); 
             (req as AuthenticatedCustomerRequest).user = user; 
             (req as AuthenticatedCustomerRequest).userId = userId; 
             (req as AuthenticatedCustomerRequest).role = role;

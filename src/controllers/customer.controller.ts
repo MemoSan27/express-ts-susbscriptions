@@ -48,12 +48,12 @@ export const updateNameAndLastnameController = async (req: Request, res: Respons
     const { name, lastname } = req.body;
         
     try {
-        if (!((req as AuthenticatedRequest).role === 'admin')) { // Verifica el rol
+        if (!((req as AuthenticatedRequest).role === 'admin')) { 
             res.status(403).json({ message: 'Only administrators are authorized to update name and lastname' });
             return; 
         }
 
-        const success: boolean = await updateNameAndLastnameService(userId, name, lastname); // Actualiza el nombre y apellido
+        const success: boolean = await updateNameAndLastnameService(userId, name, lastname); 
         
         if (success) {
             res.status(200).json({ message: 'Name and lastname updated successfully' });
