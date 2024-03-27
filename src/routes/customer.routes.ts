@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { mockMiddleware } from '../utils/mocks/middlewares/mockMiddleware';
 import { validateCustomer } from '../middlewares/validators/customer.validators';
-import { changePasswordController, createCustomerController, getLoggedCustomerController, loginCustomerController, updateNameAndLastnameController } from '../controllers/customer.controller';
+import { changePasswordController, createCustomerController, getAllCustomersController, getLoggedCustomerController, loginCustomerController, updateNameAndLastnameController } from '../controllers/customer.controller';
 import verifyCustomerJwt from '../middlewares/jwt/verifyCustomerJwt';
 import verifyAdminJwt from '../middlewares/jwt/verifyAdminJwt';
 
@@ -9,7 +9,7 @@ import verifyAdminJwt from '../middlewares/jwt/verifyAdminJwt';
 const customerRouter: Router = Router();
 
 customerRouter.route('/')
-    .get(mockMiddleware('GET desde /customers'))
+    .get(verifyAdminJwt, getAllCustomersController)
     .post(validateCustomer, createCustomerController)
 
 customerRouter.route('/login')

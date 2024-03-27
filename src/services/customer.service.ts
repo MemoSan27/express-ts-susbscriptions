@@ -8,6 +8,19 @@ import dbConnection from '../configs/database/mongo.conn';
 
 dotenv.config();
 
+// Get all games service
+export const getAllCustomersService = async (): Promise<Customer[] | null> => {
+    try {
+        const db: Db = await dbConnection(); 
+        const games = await db.collection<Customer>('customers').find().toArray();
+
+        return games; 
+    } catch (error) {
+        console.error('Error getting customers: ', error);
+        return null;
+    }
+}
+
 //Create new customer service
 export const createCustomerService = async (customer: Customer): Promise<ObjectId | null> => {
     try {

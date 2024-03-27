@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { changePasswordService, checkExistingEmailService, createCustomerService, loginCustomerService, updateNameAndLastnameService } from '../services/customer.service';
+import { changePasswordService, checkExistingEmailService, createCustomerService, getAllCustomersService, loginCustomerService, updateNameAndLastnameService } from '../services/customer.service';
 import { Customer } from '../models/Customer';
 import bcrypt from 'bcrypt'
 import dbConnection from '../configs/database/mongo.conn';
@@ -7,6 +7,35 @@ import { AuthService } from '../utils/interfaces/auth.interface';
 import { AuthenticatedCustomerRequest } from '../middlewares/jwt/verifyCustomerJwt';
 import { ObjectId } from 'mongodb';
 import { AuthenticatedRequest } from '../middlewares/jwt/verifyAdminJwt';
+
+
+// Get all games controller
+export const getAllCustomersController = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    try {
+        const authenticatedReq = req as AuthenticatedRequest; 
+        if (authenticatedReq.role !== 'admin') {
+            res.status(403).json({ message: 'Only administrators are authorized to access this service' });
+            return;
+        }
+
+        const customers = await getAllCustomersService();
+        
+        if (customers !== null) {
+            const response = customers.map(customer => ({
+                _id: customer._id,
+                name: customer.name,
+                lastname: customer.lastname,
+                email: customer.email
+            }));
+            res.status(200).json(response); 
+        } else {
+            res.status(500).json({ message: 'Error getting games' }); 
+        }
+    } catch (error) {
+        console.error('Error getting games: ', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
 
 //Create new customer controller
 export const createCustomerController = async (req: Request, res: Response) => {
