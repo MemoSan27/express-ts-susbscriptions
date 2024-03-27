@@ -9,11 +9,8 @@ import { Game } from '../models/Game';
 
 // Get all games controller
 export const getAllGamesController = async(
-    
     req: Request, 
-    
     res: Response
-    
     ): Promise<void> => {
     try {
         const games = await getAllGamesService();
