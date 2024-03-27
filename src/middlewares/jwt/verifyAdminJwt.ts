@@ -7,6 +7,7 @@ dotenv.config();
 export interface AuthenticatedRequest extends Request {
     user?: any;
     userId?: any; 
+    role?: string;
 }
 
 const verifyAdminJwt = (req: Request, res: Response, next: NextFunction) => {
@@ -21,9 +22,11 @@ const verifyAdminJwt = (req: Request, res: Response, next: NextFunction) => {
         process.env.TOKEN_SECRET as string,
         (err: any, decoded: any) => {
             if (err) return res.sendStatus(403);
-            const { user, userId } = decoded; 
+            const { user, userId, role } = decoded; 
+            if (role !== 'admin') return res.sendStatus(403); 
             (req as AuthenticatedRequest).user = user; 
             (req as AuthenticatedRequest).userId = userId; 
+            (req as AuthenticatedRequest).role = role;
             next();
         }
     );

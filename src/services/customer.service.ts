@@ -1,4 +1,4 @@
-import { Db, Collection, ObjectId } from 'mongodb';
+import { Db, Collection, ObjectId, Filter } from 'mongodb';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Customer } from '../models/Customer';
@@ -7,6 +7,19 @@ import { AuthService } from '../utils/interfaces/auth.interface';
 import dbConnection from '../configs/database/mongo.conn';
 
 dotenv.config();
+
+// Get all customers service
+export const getAllCustomersService = async (): Promise<Customer[] | null> => {
+    try {
+        const db: Db = await dbConnection(); 
+        const games = await db.collection<Customer>('customers').find().toArray();
+
+        return games; 
+    } catch (error) {
+        console.error('Error getting customers: ', error);
+        return null;
+    }
+}
 
 //Create new customer service
 export const createCustomerService = async (customer: Customer): Promise<ObjectId | null> => {
@@ -21,6 +34,24 @@ export const createCustomerService = async (customer: Customer): Promise<ObjectI
     }
 }
 
+//Get a single membership by id service
+export const getCustomerByIdService = async (customerId: string): Promise<Customer | null> => {
+    try {
+        const db: Db = await dbConnection();
+
+        if (!ObjectId.isValid(customerId)) {
+            throw new Error('Invalid customer ID');
+        }
+
+        const filter = { _id: new ObjectId(customerId) };
+
+        const customer = await db.collection<Customer>('customers').findOne(filter);
+        return customer; 
+    } catch (error) {
+        console.error('Error getting customer by ID: ', error);
+        return null;
+    }
+}
 //Service that checks if an email exist in database
 export const checkExistingEmailService = async (email: string): Promise<boolean> => {
     try {
@@ -32,6 +63,29 @@ export const checkExistingEmailService = async (email: string): Promise<boolean>
     } catch (error) {
         console.error('Error checking existing email:', error);
         return true; // Devuelve true para manejar el caso de error
+    }
+};
+
+//Update just name or lastname service with administrator assitance
+export const updateNameAndLastnameService = async (userId: string, name: string, lastname: string): Promise<boolean> => {
+    try {
+        const db = await dbConnection();
+
+        if (!ObjectId.isValid(userId)) {
+            throw new Error('Invalid user ID');
+        }
+
+        const filter: Filter<Customer> = { _id: new ObjectId(userId) }; 
+       
+
+        const result = await db.collection<Customer>('customers').updateOne(
+            filter, 
+            { $set: { name, lastname } });
+
+        return result.modifiedCount === 1;
+    } catch (error) {
+        console.error('Error updating name and lastname: ', error);
+        throw error;
     }
 };
 
