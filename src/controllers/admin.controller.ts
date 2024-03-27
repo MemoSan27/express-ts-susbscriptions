@@ -40,42 +40,40 @@ export const getAllAdminsController = async(
 }
 
 // Create new admin controller
-export const createAdminController = async(
-    req: Request, 
+export const createAdminController = async (
+    req: Request,
     res: Response
-    ) => {
-  try {
+  ) => {
+    try {
       const admin: Administ = req.body;
-
+  
       const emailExists = await checkExistingAdminEmailService(admin.email);
       if (emailExists) {
-          return res.status(400).json({ message: 'Email already exists' });
+        return res.status(400).json({ message: 'Email already exists' });
       }
-
-      const hashedPassword = await bcrypt.hash(admin.password, 10);
-      admin.password = hashedPassword;
-
+  
       const adminId = await createAdminService(admin);
-
-      const { password, ...adminWithoutPassword } = admin;
-
+  
       if (adminId) {
-          const response = {
-              message: 'Admin created successfully',
-              admin: {
-                  ...adminWithoutPassword
-              }
-          };
-
-          res.status(201).json(response);
+        // Eliminar la contraseña del admin antes de enviar la respuesta
+        const { password, ...adminWithoutPassword } = admin;
+  
+        const response = {
+          message: 'Admin created successfully',
+          admin: {
+            ...adminWithoutPassword
+          }
+        };
+  
+        res.status(201).json(response);
       } else {
-          res.status(500).json({ message: 'Failed to create admin' });
+        res.status(500).json({ message: 'Failed to create admin' });
       }
-  } catch (error) {
+    } catch (error) {
       console.error('Error creating admin:', error);
       res.status(500).json({ message: 'Internal server error' });
-  }
-};
+    }
+  };
 
 // Get an admin info by id
 export const getAdminByIdController = async(

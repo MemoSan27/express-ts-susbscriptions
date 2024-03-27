@@ -22,19 +22,24 @@ export const getAllAdminsService = async(): Promise<Administ[] | null> => {
 }
 
 // Create new admin service
-export const createAdminService = async(
+export const createAdminService = async (
   admin: Administ
-  ): Promise<ObjectId | null> => {
+): Promise<ObjectId | null> => {
   try {
-      const db: Db = await dbConnection();
-      const result = await db.collection<Administ>('admins').insertOne(admin);
+    const db: Db = await dbConnection();
 
-      return result.insertedId ? new ObjectId(result.insertedId) : null;
+    const { password, ...adminWithoutPassword } = admin;
+
+    const hashedPassword = await bcrypt.hash(admin.password, 10);
+    const adminToInsert = { ...adminWithoutPassword, password: hashedPassword };
+    const result = await db.collection<Administ>('admins').insertOne(adminToInsert);
+
+    return result.insertedId ? new ObjectId(result.insertedId) : null;
   } catch (error) {
-      console.error('Error creating admin: ', error);
-      return null;
+    console.error('Error creating admin: ', error);
+    return null;
   }
-}
+};
 
 // Get a single admin by id service
 export const getAdminByIdService = async(

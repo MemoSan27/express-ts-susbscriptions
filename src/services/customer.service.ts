@@ -36,7 +36,11 @@ export const createCustomerService = async (
             throw new Error(`Membership with id: ${customer.membershipId} does not exist.`);
         }
 
-        const result = await db.collection<Customer>('customers').insertOne(customer);
+        // Hashing the password before storing it
+        const hashedPassword = await bcrypt.hash(customer.password, 10);
+        const customerToInsert = { ...customer, password: hashedPassword };
+
+        const result = await db.collection<Customer>('customers').insertOne(customerToInsert);
 
         return result.insertedId ? new ObjectId(result.insertedId) : null;
     } catch (error) {
