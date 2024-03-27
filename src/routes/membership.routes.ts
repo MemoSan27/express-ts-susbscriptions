@@ -1,5 +1,9 @@
 import { Router } from 'express';
-import { createMembershipController, deleteMembershipByIdController, getAllMembershipsController, getMembershipByIdController, updateMembershipController } from '../controllers/membership.controller';
+import { createMembershipController, 
+    deleteMembershipByIdController, 
+    getAllMembershipsController, 
+    getMembershipByIdController, 
+    updateMembershipController } from '../controllers/membership.controller';
 import { validateMembership } from '../middlewares/validators/membership.validators';
 import verifyAdminJwt from '../middlewares/jwt/verifyAdminJwt';
 

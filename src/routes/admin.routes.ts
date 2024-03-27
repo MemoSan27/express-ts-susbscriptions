@@ -1,6 +1,13 @@
 import { Router } from 'express';
 /* import { validateAdmin } from '../middlewares/validators/admin.validators'; */
-import { changePasswordController, createAdminController, deleteAdminByIdController, getAllAdminsController, getAdminByIdController, loginAdminController, updateNameAndLastnameController, getLoggedAdminController } from '../controllers/admin.controller';
+import { changePasswordController, 
+    createAdminController, 
+    deleteAdminByIdController, 
+    getAllAdminsController, 
+    getAdminByIdController, 
+    loginAdminController, 
+    updateNameAndLastnameController, 
+    getLoggedAdminController } from '../controllers/admin.controller';
 import verifyAdminJwt from '../middlewares/jwt/verifyAdminJwt';
 
 const adminRouter: Router = Router();
