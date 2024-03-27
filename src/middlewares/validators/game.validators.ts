@@ -5,7 +5,7 @@ const gameSchema = Joi.object({
     _id: Joi.string(),
     title: Joi.string().required(),
     description: Joi.string().required(),
-    idRequiredMembership: Joi.string(),
+    membershipRequiredId: Joi.string().required(),
 });
 
 export const validateGame = (

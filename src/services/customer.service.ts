@@ -5,6 +5,7 @@ import { Customer } from '../models/Customer';
 import dotenv from 'dotenv';
 import { AuthService } from '../utils/interfaces/auth.interface';
 import dbConnection from '../configs/database/mongo.conn';
+import { Membership } from '../models/Membership';
 
 dotenv.config();
 
@@ -22,19 +23,31 @@ export const getAllCustomersService = async(): Promise<Customer[] | null> => {
 }
 
 //Create new customer service
-export const createCustomerService = async(
+export const createCustomerService = async (
     customer: Customer
-    ): Promise<ObjectId | null> => {
+): Promise<ObjectId | null> => {
     try {
         const db: Db = await dbConnection(); 
-        const result = await db.collection<Customer>('customers').insertOne(customer);
+        const membershipsCollection = db.collection<Membership>('memberships');
+
+        const filter = { _id: new ObjectId(customer.membershipId) };
+        const existingMembership = await membershipsCollection.findOne(filter);
+        if (!existingMembership) {
+            throw new Error(`Membership with id: ${customer.membershipId} does not exist.`);
+        }
+
+        // Hashing the password before storing it
+        const hashedPassword = await bcrypt.hash(customer.password, 10);
+        const customerToInsert = { ...customer, password: hashedPassword };
+
+        const result = await db.collection<Customer>('customers').insertOne(customerToInsert);
 
         return result.insertedId ? new ObjectId(result.insertedId) : null;
     } catch (error) {
         console.error('Error creating customer: ', error);
         return null;
     }
-}
+};
 
 //Get a single membership by id service
 export const getCustomerByIdService = async(

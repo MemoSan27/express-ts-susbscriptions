@@ -1,6 +1,7 @@
 import { Db, ObjectId, Filter } from 'mongodb';
 import dbConnection from '../configs/database/mongo.conn';
 import { Game } from '../models/Game';
+import { Membership } from '../models/Membership';
 
 // Get all games service
 export const getAllGamesService = async (): Promise<Game[] | null> => {
@@ -16,17 +17,36 @@ export const getAllGamesService = async (): Promise<Game[] | null> => {
 }
 
 // Create a new game service
-export const createGameService = async(game: Game): Promise<ObjectId | null> => {
+export const createGameService = async (
+    game: Game
+): Promise<ObjectId | null> => {
     try {
         const db: Db = await dbConnection(); 
-        const result = await db.collection<Game>('games').insertOne(game);
+        
+        // Verificar si la membresía asociada al juego existe
+        const membershipsCollection = db.collection<Membership>('memberships');
+        const filter = { _id: new ObjectId(game.membershipRequiredId) };
+        const existingMembership = await membershipsCollection.findOne(filter);
+        if (!existingMembership) {
+            throw new Error(`Membership with id: ${game.membershipRequiredId} does not exist.`);
+        }
+
+        // Verificar si el juego ya existe por su nombre
+        const gamesCollection = db.collection<Game>('games');
+        const existingGame = await gamesCollection.findOne({ title: game.title });
+        if (existingGame) {
+            return null; // Devolver null si el juego ya existe
+        }
+
+        // Insertar el juego si no existe
+        const result = await gamesCollection.insertOne(game);
 
         return result.insertedId ? new ObjectId(result.insertedId) : null;
     } catch (error) {
-        console.error('Error creating game: ', error);
+        console.error('Error creating this game: ', error);
         return null;
     }
-}
+};
 
 // Get a single game by its ID service
 export const getGameByIdService = async(gameId: string): Promise<Game | null> => {

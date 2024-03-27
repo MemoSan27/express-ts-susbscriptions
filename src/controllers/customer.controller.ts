@@ -42,41 +42,35 @@ export const getAllCustomersController = async(
 }
 
 //Create new customer controller
-export const createCustomerController = async(
-    req: Request, 
+export const createCustomerController = async (
+    req: Request,
     res: Response
-    ) => {
-  try {
-      const customer: Customer = req.body;
+) => {
+    try {
+        const customer: Customer = req.body;
 
-      const emailExists = await checkExistingCustomerEmailService(customer.email);
-      if (emailExists) {
-          return res.status(400).json({ message: 'Email already exists' });
-      }
+        const emailExists = await checkExistingCustomerEmailService(customer.email);
+        if (emailExists) {
+            return res.status(400).json({ message: 'Email already exists' });
+        }
 
-      const hashedPassword = await bcrypt.hash(customer.password, 10);
-      customer.password = hashedPassword;
+        const customerId = await createCustomerService(customer);
 
-      const customerId = await createCustomerService(customer);
+        if (customerId) {
+            const { password, ...customerWithoutPassword } = customer;
+            const response = {
+                message: 'Customer created successfully',
+                customer: customerWithoutPassword
+            };
 
-      const { password, ...customerWithoutPassword } = customer;
-
-      if (customerId) {
-          const response = {
-              message: 'Customer created successfully',
-              customer: {
-                  ...customerWithoutPassword
-              }
-          };
-
-          res.status(201).json(response);
-      } else {
-          res.status(500).json({ message: 'Failed to create customer' });
-      }
-  } catch (error) {
-      console.error('Error creating customer:', error);
-      res.status(500).json({ message: 'Internal server error' });
-  }
+            res.status(201).json(response);
+        } else {
+            res.status(500).json({ message: 'Failed to create customer' });
+        }
+    } catch (error) {
+        console.error('Error creating customer:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 };
 
 //Get a customer info by id, but just by an authenticated admin

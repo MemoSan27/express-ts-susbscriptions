@@ -4,5 +4,5 @@ export interface Game {
     _id?: ObjectId;
     title: string;
     description: string;
-    idRequiredMembership: string; 
+    membershipRequiredId: ObjectId; 
 }

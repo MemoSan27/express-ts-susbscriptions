@@ -6,5 +6,5 @@ export interface Customer{
     lastname: string;
     email: string;
     password: string;
-    membership: string;
+    membershipId: ObjectId;
 }
