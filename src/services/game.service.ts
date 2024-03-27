@@ -16,7 +16,7 @@ export const getAllGamesService = async (): Promise<Game[] | null> => {
 }
 
 // Create a new game service
-export const createGameService = async (game: Game): Promise<ObjectId | null> => {
+export const createGameService = async(game: Game): Promise<ObjectId | null> => {
     try {
         const db: Db = await dbConnection(); 
         const result = await db.collection<Game>('games').insertOne(game);
@@ -29,7 +29,7 @@ export const createGameService = async (game: Game): Promise<ObjectId | null> =>
 }
 
 // Get a single game by its ID service
-export const getGameByIdService = async (gameId: string): Promise<Game | null> => {
+export const getGameByIdService = async(gameId: string): Promise<Game | null> => {
     try {
         const db: Db = await dbConnection();
 
@@ -48,7 +48,7 @@ export const getGameByIdService = async (gameId: string): Promise<Game | null> =
 }
 
 // Delete a game by ID service
-export const deleteGameByIdService = async (gameId: string): Promise<boolean> => {
+export const deleteGameByIdService = async(gameId: string): Promise<boolean> => {
     try {
         const db: Db = await dbConnection();
 
@@ -67,7 +67,10 @@ export const deleteGameByIdService = async (gameId: string): Promise<boolean> =>
 }
 
 // Update a game by its ID service
-export const updateGameService = async (gameId: string, updatedGameData: Partial<Game>): Promise<boolean> => {
+export const updateGameService = async(
+    gameId: string, 
+    updatedGameData: Partial<Game>
+    ): Promise<boolean> => {
     try {
         const db: Db = await dbConnection(); 
         

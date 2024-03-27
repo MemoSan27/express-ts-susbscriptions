@@ -3,7 +3,7 @@ import dbConnection from '../configs/database/mongo.conn';
 import { Membership } from '../models/Membership';
 
 //Get all memberships info service
-export const getAllMembershipsService = async (): Promise<Membership[] | null> => {
+export const getAllMembershipsService = async(): Promise<Membership[] | null> => {
     try {
         const db: Db = await dbConnection(); 
         
@@ -17,11 +17,13 @@ export const getAllMembershipsService = async (): Promise<Membership[] | null> =
 
 
 //Create new membership service
-export const createMembershipService = async (membership: Membership): Promise<ObjectId | null> => {
+export const createMembershipService = async(
+    membership: Membership
+    ): Promise<ObjectId | null> => {
     try {
         const db: Db = await dbConnection(); 
-
         const result = await db.collection<Membership>('memberships').insertOne(membership);
+
         return result.insertedId ? new ObjectId(result.insertedId) : null;
     } catch (error) {
         console.error('Error creating membership: ', error);
@@ -30,7 +32,9 @@ export const createMembershipService = async (membership: Membership): Promise<O
 }
 
 //Get a single membership by id service
-export const getMembershipByIdService = async (membershipId: string): Promise<Membership | null> => {
+export const getMembershipByIdService = async(
+    membershipId: string
+    ): Promise<Membership | null> => {
     try {
         const db: Db = await dbConnection();
 
@@ -39,8 +43,8 @@ export const getMembershipByIdService = async (membershipId: string): Promise<Me
         }
 
         const filter = { _id: new ObjectId(membershipId) };
-
         const membership = await db.collection<Membership>('memberships').findOne(filter);
+
         return membership; 
     } catch (error) {
         console.error('Error getting membership by ID: ', error);
@@ -49,7 +53,9 @@ export const getMembershipByIdService = async (membershipId: string): Promise<Me
 }
 
 //Delete a membership service
-export const deleteMembershipByIdService = async (membershipId: string): Promise<boolean> => {
+export const deleteMembershipByIdService = async(
+    membershipId: string
+    ): Promise<boolean> => {
     try {
         const db: Db = await dbConnection();
 
@@ -58,8 +64,8 @@ export const deleteMembershipByIdService = async (membershipId: string): Promise
         }
 
         const filter = { _id: new ObjectId(membershipId) };
-
         const result = await db.collection('memberships').deleteOne(filter);
+
         return result.deletedCount === 1;
     } catch (error) {
         console.error('Error deleting membership:', error);
@@ -68,7 +74,10 @@ export const deleteMembershipByIdService = async (membershipId: string): Promise
 }
 
 //Update membership service
-export const updateMembershipService = async (membershipId: string, updatedMembershipData: Partial<Membership>): Promise<boolean> => {
+export const updateMembershipService = async(
+    membershipId: string, 
+    updatedMembershipData: Partial<Membership>
+    ): Promise<boolean> => {
     try {
         const db: Db = await dbConnection(); 
         
