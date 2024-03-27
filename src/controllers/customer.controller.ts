@@ -142,7 +142,7 @@ export const updateNameAndLastnameController = async(
         if (success) {
             res.status(200).json({ message: 'Name and lastname updated successfully' });
         } else {
-            res.status(500).json({ message: 'Failed to update name and lastname' });
+            res.status(404).json({ message: 'Customer not found.' });
         }
     } catch (error) {
         console.error('Error updating name and lastname: ', error);
