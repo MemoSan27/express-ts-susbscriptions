@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { changePasswordService, checkExistingEmailService, createCustomerService, deleteCustomerByIdService, getAllCustomersService, getCustomerByIdService, loginCustomerService, updateNameAndLastnameService } from '../services/customer.service';
+import { changePasswordService, checkExistingCustomerEmailService, createCustomerService, deleteCustomerByIdService, getAllCustomersService, getCustomerByIdService, loginCustomerService, updateNameAndLastnameService } from '../services/customer.service';
 import { Customer } from '../models/Customer';
 import bcrypt from 'bcrypt'
 import dbConnection from '../configs/database/mongo.conn';
@@ -36,7 +36,7 @@ export const createCustomerController = async (req: Request, res: Response) => {
   try {
       const customer: Customer = req.body;
 
-      const emailExists = await checkExistingEmailService(customer.email);
+      const emailExists = await checkExistingCustomerEmailService(customer.email);
       if (emailExists) {
           return res.status(400).json({ message: 'Email already exists' });
       }
@@ -128,6 +128,26 @@ export const updateNameAndLastnameController = async (req: Request, res: Respons
     }
 };
 
+
+//Change authenticated customer password controller
+export const changePasswordController = async (req: AuthenticatedCustomerRequest, res: Response) => {
+  const userId = new ObjectId(req.userId); 
+  const { oldPassword, newPassword } = req.body;
+
+  try {
+      const success = await changePasswordService(userId, oldPassword, newPassword);
+
+      if (success) {
+          return res.status(200).json({ message: 'Password changed success.' });
+      } else {
+          return res.status(400).json({ message: 'Invalid current password.' });
+      }
+  } catch (error) {
+      console.error('Error in process: :', error);
+      return res.status(500).json({ message: 'Internal server error'  });
+  }
+};
+
 //Get logged customer controller
 export const getLoggedCustomerController = async(req: AuthenticatedCustomerRequest, res: Response) => {
     const user = req.user;
@@ -154,24 +174,4 @@ export const loginCustomerController = async (req: Request, res: Response) => {
       console.error('Error in login process: ', error);
       res.status(500).json({ message: 'Internal server error' });
     }
-};
-
-
-//Change authenticated customer password controller
-export const changePasswordController = async (req: AuthenticatedCustomerRequest, res: Response) => {
-  const userId = new ObjectId(req.userId); 
-  const { oldPassword, newPassword } = req.body;
-
-  try {
-      const success = await changePasswordService(userId, oldPassword, newPassword);
-
-      if (success) {
-          return res.status(200).json({ message: 'Password changed success.' });
-      } else {
-          return res.status(400).json({ message: 'Invalid current password.' });
-      }
-  } catch (error) {
-      console.error('Error in process: :', error);
-      return res.status(500).json({ message: 'Internal server error'  });
-  }
 };

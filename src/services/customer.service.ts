@@ -54,7 +54,7 @@ export const getCustomerByIdService = async (customerId: string): Promise<Custom
 }
 
 //Service that checks if an email exist in database
-export const checkExistingEmailService = async (email: string): Promise<boolean> => {
+export const checkExistingCustomerEmailService = async (email: string): Promise<boolean> => {
     try {
         const db: Db = await dbConnection();
         const customers: Collection<Customer> = db.collection<Customer>('customers');
@@ -109,6 +109,35 @@ export const updateNameAndLastnameService = async (userId: string, name: string,
     }
 };
 
+//Change authenticated customer password service
+export const changePasswordService = async (userId: ObjectId, oldPassword: string, newPassword: string): Promise<boolean> => {
+    try {
+        const db: Db = await dbConnection();
+        const customers = db.collection('customers');
+
+        const user = await customers.findOne({ _id: userId });
+
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        const passwordMatch = await bcrypt.compare(oldPassword, user.password);
+
+        if (!passwordMatch) {
+            return false;
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        await customers.updateOne({ _id: userId }, { $set: { password: hashedPassword } });
+
+        return true;
+    } catch (error) {
+        console.error('Error in process: ', error);
+        throw error;
+    }
+};
+
 //Customer Login Service
 export const loginCustomerService = (db: Db): AuthService => {
     const customers: Collection<Customer> = db.collection<Customer>('customers');
@@ -139,33 +168,4 @@ export const loginCustomerService = (db: Db): AuthService => {
     };
 
     return { login };
-};
-
-//Change authenticated customer password service
-export const changePasswordService = async (userId: ObjectId, oldPassword: string, newPassword: string): Promise<boolean> => {
-    try {
-        const db: Db = await dbConnection();
-        const customers = db.collection('customers');
-
-        const user = await customers.findOne({ _id: userId });
-
-        if (!user) {
-            throw new Error('User not found');
-        }
-
-        const passwordMatch = await bcrypt.compare(oldPassword, user.password);
-
-        if (!passwordMatch) {
-            return false;
-        }
-
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-        await customers.updateOne({ _id: userId }, { $set: { password: hashedPassword } });
-
-        return true;
-    } catch (error) {
-        console.error('Error in process: ', error);
-        throw error;
-    }
 };

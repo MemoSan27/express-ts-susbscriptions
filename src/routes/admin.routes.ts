@@ -1,24 +1,26 @@
 import { Router } from 'express';
-import { mockMiddleware } from '../utils/mocks/middlewares/mockMiddleware';
-import { getLoggedAdminController, loginAdminController } from '../controllers/admin.controller';
+/* import { validateAdmin } from '../middlewares/validators/admin.validators'; */
+import { changePasswordController, createAdminController, deleteAdminByIdController, getAllAdminsController, getAdminByIdController, loginAdminController, updateNameAndLastnameController, getLoggedAdminController } from '../controllers/admin.controller';
 import verifyAdminJwt from '../middlewares/jwt/verifyAdminJwt';
-
 
 const adminRouter: Router = Router();
 
 adminRouter.route('/')
-    .get(mockMiddleware('GET desde /customers'))
-    .post(mockMiddleware('POST desde /customers'))
+    .get(verifyAdminJwt, getAllAdminsController)
+    .post(verifyAdminJwt, createAdminController);
 
 adminRouter.route('/login')
-    .post(loginAdminController)
+    .post(loginAdminController);
 
 adminRouter.route('/me')
-    .get(verifyAdminJwt, getLoggedAdminController)
+    .get(verifyAdminJwt, getLoggedAdminController)    
+
+adminRouter.route('/auth-chpass')
+    .post(verifyAdminJwt, changePasswordController);
 
 adminRouter.route('/:id')
-    .get(mockMiddleware('GET ONE desde /customers'))    
-    .delete(mockMiddleware('DELETE desde /customers'))    
-    .patch(mockMiddleware('PATCH desde /customers'))    
+    .get(verifyAdminJwt, getAdminByIdController)
+    .delete(verifyAdminJwt, deleteAdminByIdController)
+    .patch(verifyAdminJwt, updateNameAndLastnameController);
 
-export {adminRouter};
+export { adminRouter };

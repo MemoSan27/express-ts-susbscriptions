@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { mockMiddleware } from '../utils/mocks/middlewares/mockMiddleware';
 import { validateCustomer } from '../middlewares/validators/customer.validators';
 import { changePasswordController, createCustomerController, deleteCustomerByIdController, getAllCustomersController, getCustomerByIdController, getLoggedCustomerController, loginCustomerController, updateNameAndLastnameController } from '../controllers/customer.controller';
 import verifyCustomerJwt from '../middlewares/jwt/verifyCustomerJwt';
