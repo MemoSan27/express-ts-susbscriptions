@@ -9,7 +9,7 @@ import { ObjectId } from 'mongodb';
 import { AuthenticatedRequest } from '../middlewares/jwt/verifyAdminJwt';
 
 
-// Get all games controller
+// Get all customers controller just by authenticated admin
 export const getAllCustomersController = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     try {
         const authenticatedReq = req as AuthenticatedRequest; 

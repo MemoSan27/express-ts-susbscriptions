@@ -8,7 +8,7 @@ import dbConnection from '../configs/database/mongo.conn';
 
 dotenv.config();
 
-// Get all games service
+// Get all customers service
 export const getAllCustomersService = async (): Promise<Customer[] | null> => {
     try {
         const db: Db = await dbConnection(); 
