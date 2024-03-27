@@ -29,6 +29,7 @@ export const loginAdminService = (db: Db): AuthService => {
       const token = jwt.sign({ 
         userId: admin._id,
         user: admin.name,
+        role: 'admin',
         },
         tokenSecret,
         { expiresIn: '2d' });

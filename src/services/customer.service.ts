@@ -1,4 +1,4 @@
-import { Db, Collection, ObjectId } from 'mongodb';
+import { Db, Collection, ObjectId, Filter } from 'mongodb';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Customer } from '../models/Customer';
@@ -32,6 +32,29 @@ export const checkExistingEmailService = async (email: string): Promise<boolean>
     } catch (error) {
         console.error('Error checking existing email:', error);
         return true; // Devuelve true para manejar el caso de error
+    }
+};
+
+//Update just name or lastname service with administrator assitance
+export const updateNameAndLastnameService = async (userId: string, name: string, lastname: string): Promise<boolean> => {
+    try {
+        const db = await dbConnection();
+
+        if (!ObjectId.isValid(userId)) {
+            throw new Error('Invalid user ID');
+        }
+
+        const filter: Filter<Customer> = { _id: new ObjectId(userId) }; // Convierte el userId en un ObjectId
+       
+
+        const result = await db.collection<Customer>('customers').updateOne(
+            filter, 
+            { $set: { name, lastname } });
+
+        return result.modifiedCount === 1;
+    } catch (error) {
+        console.error('Error updating name and lastname: ', error);
+        throw error;
     }
 };
 

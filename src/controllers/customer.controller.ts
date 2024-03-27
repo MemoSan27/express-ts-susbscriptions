@@ -1,11 +1,12 @@
-import { Request, Response } from 'express';
-import { changePasswordService, checkExistingEmailService, createCustomerService, loginCustomerService } from '../services/customer.service';
+import { NextFunction, Request, Response } from 'express';
+import { changePasswordService, checkExistingEmailService, createCustomerService, loginCustomerService, updateNameAndLastnameService } from '../services/customer.service';
 import { Customer } from '../models/Customer';
 import bcrypt from 'bcrypt'
 import dbConnection from '../configs/database/mongo.conn';
 import { AuthService } from '../utils/interfaces/auth.interface';
 import { AuthenticatedCustomerRequest } from '../middlewares/jwt/verifyCustomerJwt';
 import { ObjectId } from 'mongodb';
+import { AuthenticatedRequest } from '../middlewares/jwt/verifyAdminJwt';
 
 //Create new customer controller
 export const createCustomerController = async (req: Request, res: Response) => {
@@ -40,6 +41,29 @@ export const createCustomerController = async (req: Request, res: Response) => {
       console.error('Error creating customer:', error);
       res.status(500).json({ message: 'Internal server error' });
   }
+};
+
+export const updateNameAndLastnameController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const userId = req.params.id; 
+    const { name, lastname } = req.body;
+        
+    try {
+        if (!((req as AuthenticatedRequest).role === 'admin')) { // Verifica el rol
+            res.status(403).json({ message: 'Only administrators are authorized to update name and lastname' });
+            return; 
+        }
+
+        const success: boolean = await updateNameAndLastnameService(userId, name, lastname); // Actualiza el nombre y apellido
+        
+        if (success) {
+            res.status(200).json({ message: 'Name and lastname updated successfully' });
+        } else {
+            res.status(500).json({ message: 'Failed to update name and lastname' });
+        }
+    } catch (error) {
+        console.error('Error updating name and lastname: ', error);
+        res.status(500).json({ message: 'Internal server errorrrr' });
+    }
 };
 
 //Get logged customer controller
