@@ -64,8 +64,8 @@ export const createDownloadService = async (
         // Verificar si el juego ya fue descargado por el cliente
         const downloadsCollection = db.collection<Download>('downloads');
         const existingDownload = await downloadsCollection.findOne({
-            idCustomer: new ObjectId(customerId),
-            idGame: new ObjectId(download.idGame)
+            idCustomer: customerId,
+            idGame: download.idGame
         });
         if (existingDownload) {
             throw new Error(`Game is already downloaded by the customer.`);
@@ -73,8 +73,8 @@ export const createDownloadService = async (
 
         // Crear la descarga con la fecha actual
         const downloadToInsert: Download = {
-            idCustomer: new ObjectId(customerId),
-            idGame: new ObjectId(download.idGame),
+            idCustomer: customerId,
+            idGame: download.idGame,
             downloadDate: new Date()
         };
 

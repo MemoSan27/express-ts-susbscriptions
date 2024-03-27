@@ -27,8 +27,8 @@ export const createDownloadController = async (req: AuthenticatedCustomerRequest
 
         // Crear el objeto Download con la ID del cliente y el ID del juego
         const download: Download = {
-            idCustomer: new ObjectId(customerId),
-            idGame: new ObjectId(idGame),
+            idCustomer: customerId,
+            idGame: idGame,
             downloadDate: new Date()
         };
 
