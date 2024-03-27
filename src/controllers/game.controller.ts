@@ -45,7 +45,7 @@ export const createGameController = async (
             };
             res.status(201).json(response);
         } else {
-            res.status(400).json({ message: 'Game already exists' }); // Manejar el caso en que el juego ya existe
+            res.status(400).json({ message: 'Game already exists' }); 
         }
     } catch (error) {
         console.error('Error creating game:', error);
