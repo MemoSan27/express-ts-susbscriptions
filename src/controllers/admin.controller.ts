@@ -1,5 +1,12 @@
-import { NextFunction, Request, Response } from 'express';
-import { changePasswordService, checkExistingAdminEmailService, createAdminService, deleteAdminByIdService, getAllAdminsService, getAdminByIdService, loginAdminService, updateNameAndLastnameService } from '../services/admin.service';
+import { Request, Response } from 'express';
+import { changePasswordService, 
+    checkExistingAdminEmailService, 
+    createAdminService, 
+    deleteAdminByIdService, 
+    getAllAdminsService, 
+    getAdminByIdService, 
+    loginAdminService, 
+    updateNameAndLastnameService } from '../services/admin.service';
 import dbConnection from '../configs/database/mongo.conn';
 import { AuthenticatedRequest } from '../middlewares/jwt/verifyAdminJwt';
 import { AuthService } from '../utils/interfaces/auth.interface';
@@ -9,7 +16,10 @@ import { Administ } from '../models/Admin';
 
 
 // Get all admins controller
-export const getAllAdminsController = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+export const getAllAdminsController = async(
+    req: AuthenticatedRequest, 
+    res: Response
+    ): Promise<void> => {
   try {
       const admins = await getAllAdminsService();
       
@@ -30,7 +40,10 @@ export const getAllAdminsController = async (req: AuthenticatedRequest, res: Res
 }
 
 // Create new admin controller
-export const createAdminController = async (req: Request, res: Response) => {
+export const createAdminController = async(
+    req: Request, 
+    res: Response
+    ) => {
   try {
       const admin: Administ = req.body;
 
@@ -65,7 +78,10 @@ export const createAdminController = async (req: Request, res: Response) => {
 };
 
 // Get an admin info by id
-export const getAdminByIdController = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+export const getAdminByIdController = async(
+    req: AuthenticatedRequest, 
+    res: Response
+    ): Promise<void> => {
   try {
       const adminId: string = req.params.id;
       const admin = await getAdminByIdService(adminId);
@@ -87,7 +103,10 @@ export const getAdminByIdController = async (req: AuthenticatedRequest, res: Res
 }
 
 // Delete an admin by ID
-export const deleteAdminByIdController = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+export const deleteAdminByIdController = async(
+    req: AuthenticatedRequest, 
+    res: Response
+    ): Promise<void> => {
   try {
       const adminId: string = req.params.id;
 
@@ -105,7 +124,10 @@ export const deleteAdminByIdController = async (req: AuthenticatedRequest, res: 
 }
 
 // Update an admin's name and lastname
-export const updateNameAndLastnameController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const updateNameAndLastnameController = async(
+    req: Request, 
+    res: Response, 
+    ): Promise<void> => {
   const userId = req.params.id; 
   const { name } = req.body;
       
@@ -125,7 +147,10 @@ export const updateNameAndLastnameController = async (req: Request, res: Respons
 
 
 // Change authenticated admin's password
-export const changePasswordController = async (req: AuthenticatedRequest, res: Response) => {
+export const changePasswordController = async(
+    req: AuthenticatedRequest, 
+    res: Response
+    ) => {
   const userId = new ObjectId(req.userId); 
   const { oldPassword, newPassword } = req.body;
 
@@ -144,13 +169,19 @@ export const changePasswordController = async (req: AuthenticatedRequest, res: R
 };
 
 //Get logged administrator controller
-export const getLoggedAdminController = async(req: AuthenticatedRequest, res: Response) => {
+export const getLoggedAdminController = async(
+    req: AuthenticatedRequest, 
+    res: Response
+    ) => {
   const user = req.user;
   return res.json(user)
 }
 
 //Login administrator controller
-export const loginAdminController = async (req: Request, res: Response) => {
+export const loginAdminController = async(
+    req: Request, 
+    res: Response
+    ) => {
   const { email, password } = req.body;
 
   try {
