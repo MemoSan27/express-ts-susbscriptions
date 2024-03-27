@@ -8,7 +8,10 @@ import { createMembershipService,
 import { Membership } from '../models/Membership';
 
 //Get all membership info controller
-export const getAllMembershipsController = async (req: Request, res: Response): Promise<void> => {
+export const getAllMembershipsController = async(
+    req: Request,
+    res: Response
+    ): Promise<void> => {
     try {
         const memberships = await getAllMembershipsService();
         
@@ -24,7 +27,10 @@ export const getAllMembershipsController = async (req: Request, res: Response): 
 }
 
 //Create a new membership with admin jwt validation controller
-export const createMembershipController = async (req: Request, res: Response): Promise<void> => {
+export const createMembershipController = async(
+    req: Request, 
+    res: Response
+    ): Promise<void> => {
     try {
         const membership: Membership = req.body;
         const membershipId = await createMembershipService(membership);
@@ -48,10 +54,14 @@ export const createMembershipController = async (req: Request, res: Response): P
 };
 
 //Get a single membership by id controller
-export const getMembershipByIdController = async (req: Request, res: Response): Promise<void> => {
+export const getMembershipByIdController = async(
+    req: Request, 
+    res: Response
+    ): Promise<void> => {
     try {
         const membershipId: string = req.params.id;
         const membership = await getMembershipByIdService(membershipId);
+
         if (membership) {
             res.status(200).json(membership);
         } else {
@@ -64,10 +74,12 @@ export const getMembershipByIdController = async (req: Request, res: Response): 
 }
 
 //Delete a membership with admin jwt validation controller
-export const deleteMembershipByIdController = async (req: Request, res: Response): Promise<void> => {
+export const deleteMembershipByIdController = async(
+    req: Request, 
+    res: Response
+    ): Promise<void> => {
     try {
         const membershipId: string = req.params.id;
-
         const deleted = await deleteMembershipByIdService(membershipId);
 
         if (deleted) {
@@ -82,11 +94,13 @@ export const deleteMembershipByIdController = async (req: Request, res: Response
 }
 
 //Update by id a membership with admin jwt validation controller 
-export const updateMembershipController = async (req: Request, res: Response): Promise<void> => {
+export const updateMembershipController = async(
+    req: Request, 
+    res: Response
+    ): Promise<void> => {
     try {
         const membershipId: string = req.params.id; 
         const updatedMembershipData: Partial<Membership> = req.body; 
-
         const updatedMembership = await updateMembershipService(membershipId, updatedMembershipData);
 
         if (updatedMembership) {

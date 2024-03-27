@@ -9,7 +9,7 @@ import dbConnection from '../configs/database/mongo.conn';
 dotenv.config();
 
 // Get all customers service
-export const getAllCustomersService = async (): Promise<Customer[] | null> => {
+export const getAllCustomersService = async(): Promise<Customer[] | null> => {
     try {
         const db: Db = await dbConnection(); 
         const games = await db.collection<Customer>('customers').find().toArray();
@@ -22,11 +22,13 @@ export const getAllCustomersService = async (): Promise<Customer[] | null> => {
 }
 
 //Create new customer service
-export const createCustomerService = async (customer: Customer): Promise<ObjectId | null> => {
+export const createCustomerService = async(
+    customer: Customer
+    ): Promise<ObjectId | null> => {
     try {
         const db: Db = await dbConnection(); 
-
         const result = await db.collection<Customer>('customers').insertOne(customer);
+
         return result.insertedId ? new ObjectId(result.insertedId) : null;
     } catch (error) {
         console.error('Error creating customer: ', error);
@@ -35,7 +37,9 @@ export const createCustomerService = async (customer: Customer): Promise<ObjectI
 }
 
 //Get a single membership by id service
-export const getCustomerByIdService = async (customerId: string): Promise<Customer | null> => {
+export const getCustomerByIdService = async(
+    customerId: string
+    ): Promise<Customer | null> => {
     try {
         const db: Db = await dbConnection();
 
@@ -44,8 +48,8 @@ export const getCustomerByIdService = async (customerId: string): Promise<Custom
         }
 
         const filter = { _id: new ObjectId(customerId) };
-
         const customer = await db.collection<Customer>('customers').findOne(filter);
+
         return customer; 
     } catch (error) {
         console.error('Error getting customer by ID: ', error);
@@ -54,21 +58,25 @@ export const getCustomerByIdService = async (customerId: string): Promise<Custom
 }
 
 //Service that checks if an email exist in database
-export const checkExistingCustomerEmailService = async (email: string): Promise<boolean> => {
+export const checkExistingCustomerEmailService = async(
+    email: string
+    ): Promise<boolean> => {
     try {
         const db: Db = await dbConnection();
         const customers: Collection<Customer> = db.collection<Customer>('customers');
-
         const existingCustomer = await customers.findOne({ email });
-        return !!existingCustomer; // Devuelve true si el cliente existe, false si no
+
+        return !!existingCustomer; 
     } catch (error) {
         console.error('Error checking existing email:', error);
-        return true; // Devuelve true para manejar el caso de error
+        return true; 
     }
 };
 
 //Delete a customer by ID by an authorized admin
-export const deleteCustomerByIdService = async (customerId: string): Promise<boolean> => {
+export const deleteCustomerByIdService = async(
+    customerId: string
+    ): Promise<boolean> => {
     try {
         const db: Db = await dbConnection();
 
@@ -87,7 +95,11 @@ export const deleteCustomerByIdService = async (customerId: string): Promise<boo
 }
 
 //Update just name or lastname service with administrator assitance
-export const updateNameAndLastnameService = async (userId: string, name: string, lastname: string): Promise<boolean> => {
+export const updateNameAndLastnameService = async(
+    userId: string, 
+    name: string, 
+    lastname: string
+    ): Promise<boolean> => {
     try {
         const db = await dbConnection();
 
@@ -110,11 +122,14 @@ export const updateNameAndLastnameService = async (userId: string, name: string,
 };
 
 //Change authenticated customer password service
-export const changePasswordService = async (userId: ObjectId, oldPassword: string, newPassword: string): Promise<boolean> => {
+export const changePasswordService = async(
+    userId: ObjectId, 
+    oldPassword: string, 
+    newPassword: string
+    ): Promise<boolean> => {
     try {
         const db: Db = await dbConnection();
         const customers = db.collection('customers');
-
         const user = await customers.findOne({ _id: userId });
 
         if (!user) {
@@ -128,7 +143,6 @@ export const changePasswordService = async (userId: ObjectId, oldPassword: strin
         }
 
         const hashedPassword = await bcrypt.hash(newPassword, 10);
-
         await customers.updateOne({ _id: userId }, { $set: { password: hashedPassword } });
 
         return true;

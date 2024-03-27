@@ -9,10 +9,11 @@ import dbConnection from '../configs/database/mongo.conn';
 dotenv.config();
 
 // Get all admins service
-export const getAllAdminsService = async (): Promise<Administ[] | null> => {
+export const getAllAdminsService = async(): Promise<Administ[] | null> => {
   try {
       const db: Db = await dbConnection();
       const admins = await db.collection<Administ>('admins').find().toArray();
+
       return admins;
   } catch (error) {
       console.error('Error getting admins: ', error);
@@ -21,10 +22,13 @@ export const getAllAdminsService = async (): Promise<Administ[] | null> => {
 }
 
 // Create new admin service
-export const createAdminService = async (admin: Administ): Promise<ObjectId | null> => {
+export const createAdminService = async(
+  admin: Administ
+  ): Promise<ObjectId | null> => {
   try {
       const db: Db = await dbConnection();
       const result = await db.collection<Administ>('admins').insertOne(admin);
+
       return result.insertedId ? new ObjectId(result.insertedId) : null;
   } catch (error) {
       console.error('Error creating admin: ', error);
@@ -33,7 +37,9 @@ export const createAdminService = async (admin: Administ): Promise<ObjectId | nu
 }
 
 // Get a single admin by id service
-export const getAdminByIdService = async (adminId: string): Promise<Administ | null> => {
+export const getAdminByIdService = async(
+  adminId: string
+  ): Promise<Administ | null> => {
   try {
       const db: Db = await dbConnection();
 
@@ -43,6 +49,7 @@ export const getAdminByIdService = async (adminId: string): Promise<Administ | n
 
       const filter = { _id: new ObjectId(adminId) };
       const admin = await db.collection<Administ>('admins').findOne(filter);
+
       return admin;
   } catch (error) {
       console.error('Error getting admin by ID: ', error);
@@ -51,7 +58,9 @@ export const getAdminByIdService = async (adminId: string): Promise<Administ | n
 }
 
 // Delete an admin by ID service
-export const deleteAdminByIdService = async (adminId: string): Promise<boolean> => {
+export const deleteAdminByIdService = async(
+  adminId: string
+  ): Promise<boolean> => {
   try {
       const db: Db = await dbConnection();
 
@@ -70,7 +79,10 @@ export const deleteAdminByIdService = async (adminId: string): Promise<boolean> 
 }
 
 // Update just name or lastname service with administrator assistance
-export const updateNameAndLastnameService = async (adminId: string, name: string): Promise<boolean> => {
+export const updateNameAndLastnameService = async(
+  adminId: string, 
+  name: string
+  ): Promise<boolean> => {
   try {
       const db = await dbConnection();
 
@@ -92,25 +104,30 @@ export const updateNameAndLastnameService = async (adminId: string, name: string
   }
 };
 
-export const checkExistingAdminEmailService = async (email: string): Promise<boolean> => {
+//Checks if an email already exists service
+export const checkExistingAdminEmailService = async(
+  email: string
+  ): Promise<boolean> => {
   try {
       const db: Db = await dbConnection();
       const admins: Collection<Administ> = db.collection<Administ>('admins');
-
       const existingAdmin = await admins.findOne({ email });
-      return !!existingAdmin; // Devuelve true si el cliente existe, false si no
+
+      return !!existingAdmin; 
   } catch (error) {
       console.error('Error checking existing email:', error);
-      return true; // Devuelve true para manejar el caso de error
+      return true; 
   }
 };
 
 // Change authenticated admin password service
-export const changePasswordService = async (adminId: ObjectId, oldPassword: string, newPassword: string): Promise<boolean> => {
+export const changePasswordService = async(
+  adminId: ObjectId, 
+  oldPassword: string, 
+  newPassword: string): Promise<boolean> => {
   try {
       const db: Db = await dbConnection();
       const admins = db.collection('admins');
-
       const admin = await admins.findOne({ _id: adminId });
 
       if (!admin) {
@@ -124,7 +141,6 @@ export const changePasswordService = async (adminId: ObjectId, oldPassword: stri
       }
 
       const hashedPassword = await bcrypt.hash(newPassword, 10);
-
       await admins.updateOne({ _id: adminId }, { $set: { password: hashedPassword } });
 
       return true;
@@ -139,7 +155,7 @@ export const loginAdminService = (db: Db): AuthService => {
     const admins: Collection<Administ> = db.collection<Administ>('admins');
   
     const login: AuthService['login'] = async (email, password) => {
-      const admin = await admins.findOne({ email });
+    const admin = await admins.findOne({ email });
   
       if (!admin) {
         return null; 

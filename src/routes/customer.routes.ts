@@ -1,6 +1,13 @@
 import { Router } from 'express';
 import { validateCustomer } from '../middlewares/validators/customer.validators';
-import { changePasswordController, createCustomerController, deleteCustomerByIdController, getAllCustomersController, getCustomerByIdController, getLoggedCustomerController, loginCustomerController, updateNameAndLastnameController } from '../controllers/customer.controller';
+import { changePasswordController, 
+    createCustomerController, 
+    deleteCustomerByIdController, 
+    getAllCustomersController, 
+    getCustomerByIdController, 
+    getLoggedCustomerController, 
+    loginCustomerController, 
+    updateNameAndLastnameController } from '../controllers/customer.controller';
 import verifyCustomerJwt from '../middlewares/jwt/verifyCustomerJwt';
 import verifyAdminJwt from '../middlewares/jwt/verifyAdminJwt';
 

@@ -1,5 +1,9 @@
 import { Router } from 'express';
-import { createGameController, deleteGameByIdController, getAllGamesController, getGameByIdController, updateGameController } from '../controllers/game.controller';
+import { createGameController, 
+    deleteGameByIdController, 
+    getAllGamesController, 
+    getGameByIdController, 
+    updateGameController } from '../controllers/game.controller';
 import { validateGame } from '../middlewares/validators/game.validators';
 import verifyAdminJwt from '../middlewares/jwt/verifyAdminJwt';
 

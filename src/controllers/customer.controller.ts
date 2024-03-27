@@ -1,5 +1,12 @@
-import { NextFunction, Request, Response } from 'express';
-import { changePasswordService, checkExistingCustomerEmailService, createCustomerService, deleteCustomerByIdService, getAllCustomersService, getCustomerByIdService, loginCustomerService, updateNameAndLastnameService } from '../services/customer.service';
+import { Request, Response } from 'express';
+import { changePasswordService, 
+    checkExistingCustomerEmailService, 
+    createCustomerService, 
+    deleteCustomerByIdService, 
+    getAllCustomersService, 
+    getCustomerByIdService, 
+    loginCustomerService, 
+    updateNameAndLastnameService } from '../services/customer.service';
 import { Customer } from '../models/Customer';
 import bcrypt from 'bcrypt'
 import dbConnection from '../configs/database/mongo.conn';
@@ -10,7 +17,10 @@ import { AuthenticatedRequest } from '../middlewares/jwt/verifyAdminJwt';
 
 
 // Get all customers controller just by authenticated admin
-export const getAllCustomersController = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+export const getAllCustomersController = async(
+    req: AuthenticatedRequest, 
+    res: Response
+    ): Promise<void> => {
     try {
         const customers = await getAllCustomersService();
         
@@ -32,7 +42,10 @@ export const getAllCustomersController = async (req: AuthenticatedRequest, res: 
 }
 
 //Create new customer controller
-export const createCustomerController = async (req: Request, res: Response) => {
+export const createCustomerController = async(
+    req: Request, 
+    res: Response
+    ) => {
   try {
       const customer: Customer = req.body;
 
@@ -67,7 +80,10 @@ export const createCustomerController = async (req: Request, res: Response) => {
 };
 
 //Get a customer info by id, but just by an authenticated admin
-export const getCustomerByIdController = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+export const getCustomerByIdController = async(
+    req: AuthenticatedRequest, 
+    res: Response
+    ): Promise<void> => {
     try {
         const customerId: string = req.params.id;
         const customer = await getCustomerByIdService(customerId);
@@ -90,7 +106,10 @@ export const getCustomerByIdController = async (req: AuthenticatedRequest, res: 
 }
 
 // Delete a customer by ID by an authorized admin controller
-export const deleteCustomerByIdController = async (req: Request, res: Response): Promise<void> => {
+export const deleteCustomerByIdController = async(
+    req: Request, 
+    res: Response
+    ): Promise<void> => {
     try {
         const customerId: string = req.params.id;
 
@@ -110,7 +129,10 @@ export const deleteCustomerByIdController = async (req: Request, res: Response):
 }
 
 //Update a customer's name and lastname, but just by an authenticated admin
-export const updateNameAndLastnameController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const updateNameAndLastnameController = async(
+    req: Request, 
+    res: Response
+    ): Promise<void> => {
     const userId = req.params.id; 
     const { name, lastname } = req.body;
         
@@ -120,7 +142,7 @@ export const updateNameAndLastnameController = async (req: Request, res: Respons
         if (success) {
             res.status(200).json({ message: 'Name and lastname updated successfully' });
         } else {
-            res.status(500).json({ message: 'Failed to update name and lastname' });
+            res.status(404).json({ message: 'Customer not found.' });
         }
     } catch (error) {
         console.error('Error updating name and lastname: ', error);
@@ -130,7 +152,10 @@ export const updateNameAndLastnameController = async (req: Request, res: Respons
 
 
 //Change authenticated customer password controller
-export const changePasswordController = async (req: AuthenticatedCustomerRequest, res: Response) => {
+export const changePasswordController = async(
+    req: AuthenticatedCustomerRequest, 
+    res: Response
+    ) => {
   const userId = new ObjectId(req.userId); 
   const { oldPassword, newPassword } = req.body;
 
@@ -149,13 +174,19 @@ export const changePasswordController = async (req: AuthenticatedCustomerRequest
 };
 
 //Get logged customer controller
-export const getLoggedCustomerController = async(req: AuthenticatedCustomerRequest, res: Response) => {
+export const getLoggedCustomerController = async(
+    req: AuthenticatedCustomerRequest, 
+    res: Response
+    ) => {
     const user = req.user;
     return res.json(user)
 }
 
 //Login customer controller
-export const loginCustomerController = async (req: Request, res: Response) => {
+export const loginCustomerController = async(
+    req: Request, 
+    res: Response
+    ) => {
     const { email, password } = req.body;
   
     try {
