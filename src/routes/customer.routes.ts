@@ -10,6 +10,7 @@ import { changePasswordController,
     updateNameAndLastnameController } from '../controllers/customer.controller';
 import verifyCustomerJwt from '../middlewares/jwt/verifyCustomerJwt';
 import verifyAdminJwt from '../middlewares/jwt/verifyAdminJwt';
+import { validateUpdateCustomer } from '../middlewares/validators/customer.update.validators';
 
 
 const customerRouter: Router = Router();
@@ -30,6 +31,6 @@ customerRouter.route('/auth-chpass')
 customerRouter.route('/:id')
     .get(verifyAdminJwt, getCustomerByIdController)    
     .delete(verifyAdminJwt, deleteCustomerByIdController)    
-    .patch(verifyAdminJwt, updateNameAndLastnameController)    
+    .patch(validateUpdateCustomer, verifyAdminJwt, updateNameAndLastnameController)    
 
 export {customerRouter};

@@ -1,16 +1,23 @@
 import { Router } from 'express';
 import { mockMiddleware } from '../utils/mocks/middlewares/mockMiddleware';
-
+import verifyCustomerJwt from '../middlewares/jwt/verifyCustomerJwt';
+import { createDownloadController, 
+    deleteDownloadController, 
+    getAllDownloadsController, 
+    getDownloadByIdController } from '../controllers/download.controller';
+import verifyAdminJwt from '../middlewares/jwt/verifyAdminJwt';
 
 const downloadRouter: Router = Router();
 
 downloadRouter.route('/')
-    .get(mockMiddleware('GET desde /downloads'))
-    .post(mockMiddleware('POST desde /downloads'))
+    .get(verifyAdminJwt, getAllDownloadsController);
+
+downloadRouter.route('/customer')
+    .get(verifyCustomerJwt, getAllDownloadsController)
+    .post(verifyCustomerJwt, createDownloadController);
 
 downloadRouter.route('/:id')
-    .get(mockMiddleware('GET ONE desde /downloads'))
-    .delete(mockMiddleware('DELETE desde /downloads'))
-    .patch(mockMiddleware('PATCH desde /downloads'))
+    .get(verifyAdminJwt, getDownloadByIdController)
+    .delete(verifyCustomerJwt, deleteDownloadController)
 
-export {downloadRouter};
+export { downloadRouter };
