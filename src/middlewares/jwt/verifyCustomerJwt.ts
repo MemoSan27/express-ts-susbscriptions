@@ -5,8 +5,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export interface AuthenticatedCustomerRequest extends Request {
-    user?: any; 
-    userId?: any;
+    user?: string; 
+    userId?: string;
     role?: string;
 }
 

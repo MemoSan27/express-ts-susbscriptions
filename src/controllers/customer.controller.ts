@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { changePasswordService, checkExistingEmailService, createCustomerService, getAllCustomersService, getCustomerByIdService, loginCustomerService, updateNameAndLastnameService } from '../services/customer.service';
+import { changePasswordService, checkExistingCustomerEmailService, createCustomerService, deleteCustomerByIdService, getAllCustomersService, getCustomerByIdService, loginCustomerService, updateNameAndLastnameService } from '../services/customer.service';
 import { Customer } from '../models/Customer';
 import bcrypt from 'bcrypt'
 import dbConnection from '../configs/database/mongo.conn';
@@ -36,7 +36,7 @@ export const createCustomerController = async (req: Request, res: Response) => {
   try {
       const customer: Customer = req.body;
 
-      const emailExists = await checkExistingEmailService(customer.email);
+      const emailExists = await checkExistingCustomerEmailService(customer.email);
       if (emailExists) {
           return res.status(400).json({ message: 'Email already exists' });
       }
@@ -89,6 +89,26 @@ export const getCustomerByIdController = async (req: AuthenticatedRequest, res: 
     }
 }
 
+// Delete a customer by ID by an authorized admin controller
+export const deleteCustomerByIdController = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const customerId: string = req.params.id;
+
+        const deleted = await deleteCustomerByIdService(customerId);
+
+        console.log(customerId)
+
+        if (deleted) {
+            res.status(200).json({ message: 'Customer deleted successfully' });
+        } else {
+            res.status(404).json({ message: 'Customer not found or not deleted' });
+        }
+    } catch (error) {
+        console.error('Error deleting customer:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
 //Update a customer's name and lastname, but just by an authenticated admin
 export const updateNameAndLastnameController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const userId = req.params.id; 
@@ -106,6 +126,26 @@ export const updateNameAndLastnameController = async (req: Request, res: Respons
         console.error('Error updating name and lastname: ', error);
         res.status(500).json({ message: 'Internal server errorrrr' });
     }
+};
+
+
+//Change authenticated customer password controller
+export const changePasswordController = async (req: AuthenticatedCustomerRequest, res: Response) => {
+  const userId = new ObjectId(req.userId); 
+  const { oldPassword, newPassword } = req.body;
+
+  try {
+      const success = await changePasswordService(userId, oldPassword, newPassword);
+
+      if (success) {
+          return res.status(200).json({ message: 'Password changed success.' });
+      } else {
+          return res.status(400).json({ message: 'Invalid current password.' });
+      }
+  } catch (error) {
+      console.error('Error in process: :', error);
+      return res.status(500).json({ message: 'Internal server error'  });
+  }
 };
 
 //Get logged customer controller
@@ -134,24 +174,4 @@ export const loginCustomerController = async (req: Request, res: Response) => {
       console.error('Error in login process: ', error);
       res.status(500).json({ message: 'Internal server error' });
     }
-};
-
-
-//Change authenticated customer password controller
-export const changePasswordController = async (req: AuthenticatedCustomerRequest, res: Response) => {
-  const userId = new ObjectId(req.userId); 
-  const { oldPassword, newPassword } = req.body;
-
-  try {
-      const success = await changePasswordService(userId, oldPassword, newPassword);
-
-      if (success) {
-          return res.status(200).json({ message: 'Password changed success.' });
-      } else {
-          return res.status(400).json({ message: 'Invalid current password.' });
-      }
-  } catch (error) {
-      console.error('Error in process: :', error);
-      return res.status(500).json({ message: 'Internal server error'  });
-  }
 };

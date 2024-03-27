@@ -47,7 +47,7 @@ export const getGameByIdService = async (gameId: string): Promise<Game | null> =
     }
 }
 
-// Delete a game by its ID service
+// Delete a game by ID service
 export const deleteGameByIdService = async (gameId: string): Promise<boolean> => {
     try {
         const db: Db = await dbConnection();
