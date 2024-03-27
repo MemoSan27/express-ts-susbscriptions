@@ -34,6 +34,24 @@ export const createCustomerService = async (customer: Customer): Promise<ObjectI
     }
 }
 
+//Get a single membership by id service
+export const getCustomerByIdService = async (customerId: string): Promise<Customer | null> => {
+    try {
+        const db: Db = await dbConnection();
+
+        if (!ObjectId.isValid(customerId)) {
+            throw new Error('Invalid customer ID');
+        }
+
+        const filter = { _id: new ObjectId(customerId) };
+
+        const customer = await db.collection<Customer>('customers').findOne(filter);
+        return customer; 
+    } catch (error) {
+        console.error('Error getting customer by ID: ', error);
+        return null;
+    }
+}
 //Service that checks if an email exist in database
 export const checkExistingEmailService = async (email: string): Promise<boolean> => {
     try {

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { changePasswordService, checkExistingEmailService, createCustomerService, getAllCustomersService, loginCustomerService, updateNameAndLastnameService } from '../services/customer.service';
+import { changePasswordService, checkExistingEmailService, createCustomerService, getAllCustomersService, getCustomerByIdService, loginCustomerService, updateNameAndLastnameService } from '../services/customer.service';
 import { Customer } from '../models/Customer';
 import bcrypt from 'bcrypt'
 import dbConnection from '../configs/database/mongo.conn';
@@ -12,12 +12,6 @@ import { AuthenticatedRequest } from '../middlewares/jwt/verifyAdminJwt';
 // Get all customers controller just by authenticated admin
 export const getAllCustomersController = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     try {
-        const authenticatedReq = req as AuthenticatedRequest; 
-        if (authenticatedReq.role !== 'admin') {
-            res.status(403).json({ message: 'Only administrators are authorized to access this service' });
-            return;
-        }
-
         const customers = await getAllCustomersService();
         
         if (customers !== null) {
@@ -72,16 +66,35 @@ export const createCustomerController = async (req: Request, res: Response) => {
   }
 };
 
+//Get a customer info by id, but just by an authenticated admin
+export const getCustomerByIdController = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    try {
+        const customerId: string = req.params.id;
+        const customer = await getCustomerByIdService(customerId);
+
+        if (customer) {
+            const sanitizedCustomer = {
+                _id: customer._id,
+                name: customer.name,
+                lastname: customer.lastname,
+                email: customer.email
+            };
+            res.status(200).json(sanitizedCustomer);
+        } else {
+            res.status(404).json({ message: 'Customer not found' });
+        }
+    } catch (error) {
+        console.error('Error getting the customer: ', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+//Update a customer's name and lastname, but just by an authenticated admin
 export const updateNameAndLastnameController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const userId = req.params.id; 
     const { name, lastname } = req.body;
         
     try {
-        if (!((req as AuthenticatedRequest).role === 'admin')) { 
-            res.status(403).json({ message: 'Only administrators are authorized to update name and lastname' });
-            return; 
-        }
-
         const success: boolean = await updateNameAndLastnameService(userId, name, lastname); 
         
         if (success) {
@@ -126,7 +139,7 @@ export const loginCustomerController = async (req: Request, res: Response) => {
 
 //Change authenticated customer password controller
 export const changePasswordController = async (req: AuthenticatedCustomerRequest, res: Response) => {
-  const userId = new ObjectId(req.userId); // Transformar userId a ObjectId
+  const userId = new ObjectId(req.userId); 
   const { oldPassword, newPassword } = req.body;
 
   try {
