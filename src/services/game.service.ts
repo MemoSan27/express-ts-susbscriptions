@@ -22,15 +22,24 @@ export const createGameService = async (
 ): Promise<ObjectId | null> => {
     try {
         const db: Db = await dbConnection(); 
+        
+        // Verificar si la membresía asociada al juego existe
         const membershipsCollection = db.collection<Membership>('memberships');
-
         const filter = { _id: new ObjectId(game.membershipRequiredId) };
         const existingMembership = await membershipsCollection.findOne(filter);
         if (!existingMembership) {
             throw new Error(`Membership with id: ${game.membershipRequiredId} does not exist.`);
         }
 
-        const result = await db.collection<Game>('games').insertOne(game);
+        // Verificar si el juego ya existe por su nombre
+        const gamesCollection = db.collection<Game>('games');
+        const existingGame = await gamesCollection.findOne({ title: game.title });
+        if (existingGame) {
+            return null; // Devolver null si el juego ya existe
+        }
+
+        // Insertar el juego si no existe
+        const result = await gamesCollection.insertOne(game);
 
         return result.insertedId ? new ObjectId(result.insertedId) : null;
     } catch (error) {

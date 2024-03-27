@@ -27,10 +27,10 @@ export const getAllGamesController = async(
 }
 
 // Create a new game controller
-export const createGameController = async(
+export const createGameController = async (
     req: Request, 
     res: Response
-    ): Promise<void> => {
+): Promise<void> => {
     try {
         const game: Game = req.body;
         const gameId = await createGameService(game);
@@ -45,7 +45,7 @@ export const createGameController = async(
             };
             res.status(201).json(response);
         } else {
-            res.status(500).json({ message: 'Failed to create game' });
+            res.status(400).json({ message: 'Game already exists' }); // Manejar el caso en que el juego ya existe
         }
     } catch (error) {
         console.error('Error creating game:', error);
