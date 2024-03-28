@@ -2,7 +2,7 @@ import { Db, Filter, ObjectId } from "mongodb";
 import dbConnection from "../configs/database/mongo.conn";
 import { Membership } from "../models/Membership";
 
-export const getAllMembershipsRepository = async (): Promise<Membership[] | null> => {
+export const getAllMembershipsRepository = async(): Promise<Membership[] | null> => {
     try {
         const db: Db = await dbConnection();
         const memberships = await db.collection<Membership>('memberships').find().toArray();
@@ -14,7 +14,7 @@ export const getAllMembershipsRepository = async (): Promise<Membership[] | null
     }
 };
 
-export const createMembershipRepository = async (
+export const createMembershipRepository = async(
     membership: Membership
 ): Promise<ObjectId | null> => {
     try {
@@ -28,7 +28,7 @@ export const createMembershipRepository = async (
     }
 };
 
-export const getMembershipByIdRepository = async (
+export const getMembershipByIdRepository = async(
     membershipId: string
 ): Promise<Membership | null> => {
     try {
@@ -48,7 +48,7 @@ export const getMembershipByIdRepository = async (
     }
 };
 
-export const deleteMembershipByIdRepository = async (
+export const deleteMembershipByIdRepository = async(
     membershipId: string
 ): Promise<boolean> => {
     try {
@@ -68,7 +68,7 @@ export const deleteMembershipByIdRepository = async (
     }
 };
 
-export const updateMembershipRepository = async (
+export const updateMembershipRepository = async(
     membershipId: string, 
     updatedMembershipData: Partial<Membership>
 ): Promise<boolean> => {

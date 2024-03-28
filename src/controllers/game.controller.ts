@@ -7,7 +7,6 @@ import { createGameService,
     from '../services/game.service';
 import { Game } from '../models/Game';
 
-// Get all games controller
 export const getAllGamesController = async(
     req: Request, 
     res: Response
@@ -26,7 +25,6 @@ export const getAllGamesController = async(
     }
 }
 
-// Create a new game controller
 export const createGameController = async (
     req: Request, 
     res: Response
@@ -53,7 +51,6 @@ export const createGameController = async (
     }
 };
 
-// Get a single game by ID controller
 export const getGameByIdController = async(
     req: Request, 
     res: Response
@@ -73,7 +70,6 @@ export const getGameByIdController = async(
     }
 }
 
-// Delete a game by ID controller
 export const deleteGameByIdController = async(
     req: Request, 
     res: Response
@@ -93,7 +89,6 @@ export const deleteGameByIdController = async(
     }
 }
 
-// Update a game by ID controller 
 export const updateGameController = async(
     req: Request, 
     res: Response

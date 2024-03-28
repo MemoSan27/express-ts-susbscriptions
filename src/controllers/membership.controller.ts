@@ -7,7 +7,6 @@ import { createMembershipService,
     from '../services/membership.service';
 import { Membership } from '../models/Membership';
 
-//Get all membership info controller
 export const getAllMembershipsController = async(
     req: Request,
     res: Response
@@ -26,7 +25,6 @@ export const getAllMembershipsController = async(
     }
 }
 
-//Create a new membership with admin jwt validation controller
 export const createMembershipController = async(
     req: Request, 
     res: Response
@@ -53,7 +51,6 @@ export const createMembershipController = async(
     }
 };
 
-//Get a single membership by id controller
 export const getMembershipByIdController = async(
     req: Request, 
     res: Response
@@ -73,7 +70,6 @@ export const getMembershipByIdController = async(
     }
 }
 
-//Delete a membership with admin jwt validation controller
 export const deleteMembershipByIdController = async(
     req: Request, 
     res: Response
@@ -93,7 +89,6 @@ export const deleteMembershipByIdController = async(
     }
 }
 
-//Update by id a membership with admin jwt validation controller 
 export const updateMembershipController = async(
     req: Request, 
     res: Response

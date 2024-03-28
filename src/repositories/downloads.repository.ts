@@ -5,7 +5,10 @@ import { Customer } from "../models/Customer";
 import { Game } from "../models/Game";
 import { Membership } from "../models/Membership";
 
-export const getAllDownloadsRepository = async (userId: string, role: string): Promise<Download[] | null> => {
+export const getAllDownloadsRepository = async(
+    userId: string, 
+    role: string
+    ): Promise<Download[] | null> => {
     try {
         const db: Db = await dbConnection();
         const downloadsCollection = db.collection<Download>('downloads');
@@ -42,7 +45,6 @@ export const createDownloadRepository = async (
             throw new Error(`Game with id: ${download.idGame} does not exist.`);
         }
 
-
         const membershipsCollection = db.collection<Membership>('memberships');
         const membershipFilter = { _id: new ObjectId(game.membershipRequiredId) };
         const requiredMembership = await membershipsCollection.findOne(membershipFilter);
@@ -57,7 +59,6 @@ export const createDownloadRepository = async (
         if (!customer) {
             throw new Error(`Customer with id: ${customerId} does not exist.`);
         }
-
         
         if (
             requiredMembership.type === 'Diamond' &&
@@ -66,7 +67,6 @@ export const createDownloadRepository = async (
             throw new Error(`Customer does not have the required membership to download the game.`);
         }
 
-       
         if (requiredMembership.type === 'Gold') {
             const customerMembership = await membershipsCollection.findOne({
                 _id: new ObjectId(customer.membershipId)
@@ -83,7 +83,6 @@ export const createDownloadRepository = async (
                 throw new Error(`Customer does not have the required membership to download the game.`);
             }
         }
-
         
         const downloadsCollection = db.collection<Download>('downloads');
         const existingDownload = await downloadsCollection.findOne({
@@ -110,7 +109,9 @@ export const createDownloadRepository = async (
     }
 };
 
-export const getDownloadByIdRepository = async (downloadId: string): Promise<Download | null> => {
+export const getDownloadByIdRepository = async(
+    downloadId: string
+    ): Promise<Download | null> => {
     try {
         const db: Db = await dbConnection();
 
@@ -129,7 +130,10 @@ export const getDownloadByIdRepository = async (downloadId: string): Promise<Dow
 };
 
 
-export const deleteDownloadRepository = async (downloadId: string, customerId: string): Promise<boolean> => {
+export const deleteDownloadRepository = async(
+    downloadId: string, 
+    customerId: string
+    ): Promise<boolean> => {
     try {
         const db: Db = await dbConnection();
         const downloadsCollection = db.collection<Download>('downloads');

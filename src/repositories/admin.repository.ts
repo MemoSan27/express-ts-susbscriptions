@@ -3,7 +3,7 @@ import dbConnection from "../configs/database/mongo.conn";
 import bcrypt from 'bcrypt'
 import { Administ } from "../models/Admin";
 
-export const getAllAdminsRepository = async (): Promise<Administ[] | null> => {
+export const getAllAdminsRepository = async(): Promise<Administ[] | null> => {
     try {
         const db: Db = await dbConnection();
         const admins = await db.collection<Administ>('admins').find().toArray();
@@ -15,7 +15,9 @@ export const getAllAdminsRepository = async (): Promise<Administ[] | null> => {
     }
 };
 
-export const createAdminRepository = async (admin: Administ): Promise<ObjectId | null> => {
+export const createAdminRepository = async(
+    admin: Administ
+    ): Promise<ObjectId | null> => {
     try {
         const db: Db = await dbConnection();
 
@@ -32,7 +34,9 @@ export const createAdminRepository = async (admin: Administ): Promise<ObjectId |
     }
 };
 
-export const getAdminByIdRepository = async (adminId: string): Promise<Administ | null> => {
+export const getAdminByIdRepository = async(
+    adminId: string
+    ): Promise<Administ | null> => {
     try {
         const db: Db = await dbConnection();
 
@@ -50,7 +54,9 @@ export const getAdminByIdRepository = async (adminId: string): Promise<Administ 
     }
 };
 
-export const deleteAdminByIdRepository = async (adminId: string): Promise<boolean> => {
+export const deleteAdminByIdRepository = async(
+    adminId: string
+    ): Promise<boolean> => {
     try {
         const db: Db = await dbConnection();
 
@@ -68,7 +74,7 @@ export const deleteAdminByIdRepository = async (adminId: string): Promise<boolea
     }
 };
 
-export const updateNameAndLastnameRepository = async (
+export const updateNameAndLastnameRepository = async(
     adminId: string, 
     name: string
 ): Promise<boolean> => {
@@ -93,7 +99,9 @@ export const updateNameAndLastnameRepository = async (
     }
 };
 
-export const checkExistingAdminEmailRepository = async (email: string): Promise<boolean> => {
+export const checkExistingAdminEmailRepository = async(
+    email: string
+    ): Promise<boolean> => {
     try {
         const db: Db = await dbConnection();
         const admins: Collection<Administ> = db.collection<Administ>('admins');
@@ -106,7 +114,7 @@ export const checkExistingAdminEmailRepository = async (email: string): Promise<
     }
 };
 
-export const changePasswordRepository = async (
+export const changePasswordRepository = async(
     adminId: ObjectId, 
     oldPassword: string, 
     newPassword: string

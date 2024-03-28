@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { mockMiddleware } from '../utils/mocks/middlewares/mockMiddleware';
 import verifyCustomerJwt from '../middlewares/jwt/verifyCustomerJwt';
 import { createDownloadController, 
     deleteDownloadController, 

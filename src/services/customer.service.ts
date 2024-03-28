@@ -17,7 +17,7 @@ import { PaginationOptions, SortOptions } from '../utils/interfaces/repositories
 dotenv.config();
 
 // Get all customers service
-export const getAllCustomersService = async (
+export const getAllCustomersService = async(
     paginationOptions: PaginationOptions,
     sortOptions: SortOptions
 ): Promise<Customer[] | null> => {
@@ -42,8 +42,9 @@ export const getAllCustomersService = async (
     }
 };
 
-//Create new customer service
-export const createCustomerService = async (customer: Customer): Promise<ObjectId | null> => {
+export const createCustomerService = async (
+    customer: Customer
+    ): Promise<ObjectId | null> => {
     try {
         const result = await createCustomerRepository(customer);
         if (result !== null) {
@@ -56,8 +57,9 @@ export const createCustomerService = async (customer: Customer): Promise<ObjectI
     }
 };
 
-//Get a single membership by id service
-export const getCustomerByIdService = async (customerId: string): Promise<Customer | null> => {
+export const getCustomerByIdService = async(
+    customerId: string
+    ): Promise<Customer | null> => {
     try {
         return await getCustomerByIdRepository(customerId);
     } catch (error) {
@@ -66,8 +68,9 @@ export const getCustomerByIdService = async (customerId: string): Promise<Custom
     }
 };
 
-//Service that checks if an email exist in database
-export const checkExistingCustomerEmailService = async (email: string): Promise<boolean> => {
+export const checkExistingCustomerEmailService = async(
+    email: string
+    ): Promise<boolean> => {
     try {
         return await checkExistingCustomerEmailRepository(email);
     } catch (error) {
@@ -76,8 +79,9 @@ export const checkExistingCustomerEmailService = async (email: string): Promise<
     }
 };
 
-//Delete a customer by ID by an authorized admin
-export const deleteCustomerByIdService = async (customerId: string): Promise<boolean> => {
+export const deleteCustomerByIdService = async(
+    customerId: string
+    ): Promise<boolean> => {
     try {
         const result = await deleteCustomerByIdRepository(customerId);
         if (result) {
@@ -90,7 +94,6 @@ export const deleteCustomerByIdService = async (customerId: string): Promise<boo
     }
 };
 
-//Update just name or lastname service with administrator assitance
 export const updateNameAndLastnameService = async (
     userId: string, 
     name: string, 
@@ -98,9 +101,11 @@ export const updateNameAndLastnameService = async (
 ): Promise<boolean> => {
     try {
         const result = await updateNameAndLastnameRepository(userId, name, lastname);
+
         if (result) {
             cache.del('allCustomers');
         }
+
         return result;
     } catch (error) {
         console.error('Error updating name and lastname: ', error);
@@ -108,7 +113,6 @@ export const updateNameAndLastnameService = async (
     }
 };
 
-//Change authenticated customer password service
 export const changePasswordService = async (
     userId: ObjectId, 
     oldPassword: string, 
@@ -122,7 +126,6 @@ export const changePasswordService = async (
     }
 };
 
-//Customer Login Service
 export const loginCustomerService = (db: Db): AuthService => {
     const customers: Collection<Customer> = db.collection<Customer>('customers');
 

@@ -11,11 +11,9 @@ import dbConnection from '../configs/database/mongo.conn';
 import { AuthenticatedRequest } from '../middlewares/jwt/verifyAdminJwt';
 import { AuthService } from '../utils/interfaces/auth.interface';
 import { ObjectId } from 'mongodb';
-import bcrypt from 'bcrypt'
 import { Administ } from '../models/Admin';
 
 
-// Get all admins controller
 export const getAllAdminsController = async(
     req: AuthenticatedRequest, 
     res: Response
@@ -39,7 +37,6 @@ export const getAllAdminsController = async(
   }
 }
 
-// Create new admin controller
 export const createAdminController = async (
     req: Request,
     res: Response
@@ -55,7 +52,6 @@ export const createAdminController = async (
       const adminId = await createAdminService(admin);
   
       if (adminId) {
-        // Eliminar la contraseña del admin antes de enviar la respuesta
         const { password, ...adminWithoutPassword } = admin;
   
         const response = {
@@ -75,7 +71,6 @@ export const createAdminController = async (
     }
   };
 
-// Get an admin info by id
 export const getAdminByIdController = async(
     req: AuthenticatedRequest, 
     res: Response
@@ -100,7 +95,6 @@ export const getAdminByIdController = async(
   }
 }
 
-// Delete an admin by ID
 export const deleteAdminByIdController = async(
     req: AuthenticatedRequest, 
     res: Response
@@ -121,7 +115,6 @@ export const deleteAdminByIdController = async(
   }
 }
 
-// Update an admin's name and lastname
 export const updateNameAndLastnameController = async(
     req: Request, 
     res: Response, 
@@ -144,7 +137,6 @@ export const updateNameAndLastnameController = async(
 };
 
 
-// Change authenticated admin's password
 export const changePasswordController = async(
     req: AuthenticatedRequest, 
     res: Response
@@ -166,7 +158,6 @@ export const changePasswordController = async(
   }
 };
 
-//Get logged administrator controller
 export const getLoggedAdminController = async(
     req: AuthenticatedRequest, 
     res: Response
@@ -175,7 +166,6 @@ export const getLoggedAdminController = async(
   return res.json(user)
 }
 
-//Login administrator controller
 export const loginAdminController = async(
     req: Request, 
     res: Response
