@@ -2,13 +2,29 @@ import { Db, Filter, ObjectId } from "mongodb";
 import dbConnection from "../configs/database/mongo.conn";
 import { Game } from "../models/Game";
 import { Membership } from "../models/Membership";
+import { PaginationOptions, SortOptions } from "../utils/interfaces/repositories/optionsRepository";
 
-export const getAllGamesRepository = async(): Promise<Game[] | null> => {
+export const getAllGamesRepository = async (
+    paginationOptions: PaginationOptions,
+    sortOptions: SortOptions
+): Promise<Game[] | null> => {
     try {
         const db: Db = await dbConnection();
-        const games = await db.collection<Game>('games').find().toArray();
-        
-        return games; 
+        const { page = 1, limit = 5 } = paginationOptions;
+        const { sortBy = 'title', sortOrder = 1 } = sortOptions;
+
+        const sortQuery: any = {};
+        sortQuery[sortBy] = sortOrder;
+
+        const games = await db
+            .collection<Game>('games')
+            .find()
+            .sort(sortQuery)
+            .skip((page - 1) * limit)
+            .limit(limit)
+            .toArray();
+
+        return games;
     } catch (error) {
         console.error('Error getting games: ', error);
         return null;
