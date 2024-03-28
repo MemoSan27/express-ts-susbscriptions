@@ -7,7 +7,7 @@ import { AuthService } from '../utils/interfaces/auth.interface';
 import dbConnection from '../configs/database/mongo.conn';
 import { Membership } from '../models/Membership';
 import cache from '../middlewares/cache/nodeCacheInstance';
-import { getAllCustomersRepository } from '../repositories/customer.repository';
+import { createCustomerRepository, getAllCustomersRepository } from '../repositories/customer.repository';
 import { PaginationOptions, SortOptions } from '../utils/interfaces/repositories/optionsRepository';
 
 dotenv.config();
@@ -39,28 +39,13 @@ export const getAllCustomersService = async (
 };
 
 //Create new customer service
-export const createCustomerService = async (
-    customer: Customer
-): Promise<ObjectId | null> => {
+export const createCustomerService = async (customer: Customer): Promise<ObjectId | null> => {
     try {
-        const db: Db = await dbConnection(); 
-        const membershipsCollection = db.collection<Membership>('memberships');
-
-        const filter = { _id: new ObjectId(customer.membershipId) };
-        const existingMembership = await membershipsCollection.findOne(filter);
-        if (!existingMembership) {
-            throw new Error(`Membership with id: ${customer.membershipId} does not exist.`);
+        const result = await createCustomerRepository(customer);
+        if (result !== null) {
+            cache.del('allCustomers');
         }
-
-        // Hashing the password before storing it
-        const hashedPassword = await bcrypt.hash(customer.password, 10);
-        const customerToInsert = { ...customer, password: hashedPassword };
-
-        const result = await db.collection<Customer>('customers').insertOne(customerToInsert);
-
-        cache.del('allCustomers');
-
-        return result.insertedId ? new ObjectId(result.insertedId) : null;
+        return result;
     } catch (error) {
         console.error('Error creating customer: ', error);
         return null;
