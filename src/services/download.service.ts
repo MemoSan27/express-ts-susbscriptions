@@ -5,26 +5,37 @@ import { Game } from '../models/Game';
 import { Download } from '../models/Download';
 import { Membership } from '../models/Membership';
 import { AuthenticatedRequest } from '../middlewares/jwt/verifyAdminJwt';
+import cache from '../middlewares/cache/nodeCacheInstance';
 
 //Get all downloads service
-export const getAllDownloadsService = async (req: AuthenticatedRequest): Promise<Download[]> => {
+export const getAllDownloadsService = async (req: AuthenticatedRequest): Promise<Download[] | null> => {
     try {
+        const cachedDownloads = cache.get<Download[]>('allDownloads');
+
+        if (cachedDownloads) {
+            console.log('Cache hit for all downloads!');
+            return cachedDownloads;
+        }
+
         const db: Db = await dbConnection();
         const downloadsCollection = db.collection<Download>('downloads');
         
+        let downloads: Download[];
+
         if (req.role === 'admin') {
-            const downloads = await downloadsCollection.find().toArray();
-            return downloads;
+            downloads = await downloadsCollection.find().toArray();
+            cache.set('allDownloads', downloads, 300);
         } else if (req.role === 'customer') {
             const customerId = req.userId;
-            const downloads = await downloadsCollection.find({ idCustomer: customerId }).toArray();
-            return downloads;
+            downloads = await downloadsCollection.find({ idCustomer: customerId }).toArray();
         } else {
             throw new Error('Invalid role');
         }
+
+        return downloads; 
     } catch (error) {
-        console.error('Error fetching downloads:', error);
-        throw error;
+        console.error('Error fetching downloads: ', error);
+        return null;
     }
 };
 
@@ -105,6 +116,8 @@ export const createDownloadService = async (
 
         const result = await downloadsCollection.insertOne(downloadToInsert);
 
+        cache.del('allDownloads');
+
         return result.insertedId ? new ObjectId(result.insertedId) : null;
     } catch (error) {
         console.error('Error creating download: ', error);
@@ -135,7 +148,7 @@ export const getDownloadByIdService = async(downloadId: string): Promise<Game | 
 export const deleteDownloadService = async (
     req: AuthenticatedRequest, 
     downloadId: string
-    ): Promise<boolean> => {
+): Promise<boolean> => {
     try {
         const db: Db = await dbConnection();
         const downloadsCollection = db.collection<Download>('downloads');
@@ -145,6 +158,7 @@ export const deleteDownloadService = async (
         const deleteResult = await downloadsCollection.deleteOne({ _id: new ObjectId(downloadId), idCustomer: customerId });
 
         if (deleteResult.deletedCount === 1) {
+            cache.del('allDownloads');
             return true;
         } else {
             return false; 

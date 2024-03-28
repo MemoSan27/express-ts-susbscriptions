@@ -2,19 +2,30 @@ import { Db, ObjectId, Filter } from 'mongodb';
 import dbConnection from '../configs/database/mongo.conn';
 import { Game } from '../models/Game';
 import { Membership } from '../models/Membership';
+import cache from '../middlewares/cache/nodeCacheInstance';
 
-// Get all games service
+// Get all games service chached for 5 minutes
 export const getAllGamesService = async (): Promise<Game[] | null> => {
     try {
-        const db: Db = await dbConnection(); 
+        const cachedGames = cache.get<Game[]>('allGames');
+
+        if (cachedGames) {
+            console.log('Cache hit for all games!');
+            return cachedGames;
+        }
+        
+        const db: Db = await dbConnection();
         const games = await db.collection<Game>('games').find().toArray();
+        
+        
+        cache.set('allGames', games, 300);
 
         return games; 
     } catch (error) {
         console.error('Error getting games: ', error);
         return null;
     }
-}
+};
 
 // Create a new game service
 export const createGameService = async (
@@ -39,6 +50,8 @@ export const createGameService = async (
         }
 
         const result = await gamesCollection.insertOne(game);
+
+        cache.del('allGames');
 
         return result.insertedId ? new ObjectId(result.insertedId) : null;
     } catch (error) {
@@ -78,12 +91,18 @@ export const deleteGameByIdService = async(gameId: string): Promise<boolean> => 
         const filter = { _id: new ObjectId(gameId) };
         const result = await db.collection<Game>('games').deleteOne(filter);
 
-        return result.deletedCount === 1;
+        if (result.deletedCount === 1) {
+            cache.del('allGames');
+            return true;
+        } else {
+            return false;
+        }
     } catch (error) {
         console.error('Error deleting game:', error);
         return false;
     }
 }
+
 
 // Update a game by its ID service
 export const updateGameService = async(
@@ -104,7 +123,12 @@ export const updateGameService = async(
             { $set: updatedGameData } 
         );
 
-        return result.modifiedCount === 1; 
+        if (result.modifiedCount === 1) {
+            cache.del('allGames');
+            return true;
+        } else {
+            return false;
+        }
     } catch (error) {
         console.error('Error updating game: ', error);
         return false;

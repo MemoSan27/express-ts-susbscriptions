@@ -1,6 +1,7 @@
 import { Db } from 'mongodb';
 import dbConnection from '../configs/database/mongo.conn';
 import colors from 'colors';
+import cache from '../middlewares/cache/nodeCacheInstance';
 
 //Service to check health of database
 export const checkDatabaseHealth = async(): Promise<boolean> => {
@@ -14,3 +15,21 @@ export const checkDatabaseHealth = async(): Promise<boolean> => {
         return false;
     }
 }
+
+//Service to check the cache health cache active and acceptable response time
+export const checkCacheHealth = async (): Promise<boolean> => {
+    try {
+      const cacheActive = cache.getStats().keys > 0;
+  
+      const startTime = Date.now();
+      cache.keys();
+      const responseTime = Date.now() - startTime;
+      const acceptableResponseTime = 100; 
+      const cacheResponseTimeAcceptable = responseTime <= acceptableResponseTime;
+  
+      return cacheActive && cacheResponseTimeAcceptable;
+    } catch (error) {
+      console.error('Cache health check failed:', error);
+      return false;
+    }
+};

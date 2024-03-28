@@ -14,32 +14,41 @@ import { AuthService } from '../utils/interfaces/auth.interface';
 import { AuthenticatedCustomerRequest } from '../middlewares/jwt/verifyCustomerJwt';
 import { ObjectId } from 'mongodb';
 import { AuthenticatedRequest } from '../middlewares/jwt/verifyAdminJwt';
+import { PaginationOptions, SortOptions } from '../utils/interfaces/repositories/optionsRepository';
 
 
 // Get all customers controller just by authenticated admin
-export const getAllCustomersController = async(
-    req: AuthenticatedRequest, 
+export const getAllCustomersController = async (
+    req: AuthenticatedRequest,
     res: Response
-    ): Promise<void> => {
+): Promise<void> => {
     try {
-        const customers = await getAllCustomersService();
-        
+        const { page = 1, sortBy = 'lastname', sortOrder = 1 } = req.query;
+
+        const paginationOptions: PaginationOptions = { page: Number(page), limit: 5 };
+        const sortOptions: SortOptions = { sortBy: String(sortBy), sortOrder: Number(sortOrder) };
+
+        const customers = await getAllCustomersService(paginationOptions, sortOptions);
+
         if (customers !== null) {
-            const response = customers.map(customer => ({
+            // Excluir la contraseña de cada cliente antes de enviar la respuesta
+            const customersWithoutPassword = customers.map(customer => ({
                 _id: customer._id,
                 name: customer.name,
                 lastname: customer.lastname,
-                email: customer.email
+                email: customer.email,
+                membershipId: customer.membershipId
             }));
-            res.status(200).json(response); 
+
+            res.status(200).json(customersWithoutPassword);
         } else {
-            res.status(500).json({ message: 'Error getting games' }); 
+            res.status(500).json({ message: 'Error getting customers' });
         }
     } catch (error) {
-        console.error('Error getting games: ', error);
+        console.error('Error getting customers: ', error);
         res.status(500).json({ message: 'Internal server error' });
     }
-}
+};
 
 //Create new customer controller
 export const createCustomerController = async (
