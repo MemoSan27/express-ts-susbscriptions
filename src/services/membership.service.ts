@@ -1,10 +1,13 @@
 import { Db, ObjectId, Filter } from 'mongodb';
 import dbConnection from '../configs/database/mongo.conn';
 import { Membership } from '../models/Membership';
-import { createMembershipRepository, deleteMembershipByIdRepository, getAllMembershipsRepository, getMembershipByIdRepository, updateMembershipRepository } from '../repositories/membership.repository';
+import { createMembershipRepository, 
+    deleteMembershipByIdRepository, 
+    getAllMembershipsRepository, 
+    getMembershipByIdRepository, 
+    updateMembershipRepository } from '../repositories/membership.repository';
 
-//Get all memberships info service
-export const getAllMembershipsService = async (): Promise<Membership[] | null> => {
+export const getAllMembershipsService = async(): Promise<Membership[] | null> => {
     try {
         return await getAllMembershipsRepository();
     } catch (error) {
@@ -13,8 +16,7 @@ export const getAllMembershipsService = async (): Promise<Membership[] | null> =
     }
 };
 
-//Create new membership service
-export const createMembershipService = async (
+export const createMembershipService = async(
     membership: Membership
 ): Promise<ObjectId | null> => {
     try {
@@ -25,7 +27,6 @@ export const createMembershipService = async (
     }
 };
 
-//Get a single membership by id service
 export const getMembershipByIdService = async (
     membershipId: string
 ): Promise<Membership | null> => {
@@ -37,7 +38,6 @@ export const getMembershipByIdService = async (
     }
 };
 
-//Delete a membership service
 export const deleteMembershipByIdService = async (
     membershipId: string
 ): Promise<boolean> => {
@@ -49,7 +49,6 @@ export const deleteMembershipByIdService = async (
     }
 };
 
-//Update membership service
 export const updateMembershipService = async (
     membershipId: string, 
     updatedMembershipData: Partial<Membership>

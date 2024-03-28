@@ -7,8 +7,10 @@ import { createDownloadService,
     getDownloadByIdService} from '../services/download.service';
 import { AuthenticatedCustomerRequest } from '../middlewares/jwt/verifyCustomerJwt';
 
-//Get all downloads controller
-export const getAllDownloadsController = async (req: Request, res: Response): Promise<void> => {
+export const getAllDownloadsController = async (
+    req: Request, 
+    res: Response
+    ): Promise<void> => {
     try {
         const downloads = await getAllDownloadsService(req);
         res.status(200).json(downloads);
@@ -18,7 +20,6 @@ export const getAllDownloadsController = async (req: Request, res: Response): Pr
     }
 };
 
-//Create a new download depending about memberships and game required kind of memberships controller
 export const createDownloadController = async (
     req: AuthenticatedCustomerRequest, 
     res: Response
@@ -57,7 +58,6 @@ export const createDownloadController = async (
     }
 };
 
-// Get a single download by ID controller
 export const getDownloadByIdController = async(
     req: Request, 
     res: Response
@@ -77,7 +77,6 @@ export const getDownloadByIdController = async(
     }
 }
 
-// Delete an own download controller 
 export const deleteDownloadController = async(
     req: Request, 
     res: Response

@@ -1,17 +1,18 @@
-import { Db, Collection, ObjectId, Filter } from 'mongodb';
-import dbConnection from '../configs/database/mongo.conn';
-import { Customer } from '../models/Customer';
-import { Game } from '../models/Game';
+import {ObjectId} from 'mongodb';
 import { Download } from '../models/Download';
-import { Membership } from '../models/Membership';
 import { AuthenticatedRequest } from '../middlewares/jwt/verifyAdminJwt';
 import cache from '../middlewares/cache/nodeCacheInstance';
-import { createDownloadRepository, deleteDownloadRepository, getAllDownloadsRepository, getDownloadByIdRepository } from '../repositories/downloads.repository';
+import { createDownloadRepository, 
+    deleteDownloadRepository, 
+    getAllDownloadsRepository, 
+    getDownloadByIdRepository } from '../repositories/downloads.repository';
 
 
 
 //Get all downloads service
-export const getAllDownloadsService = async (req: AuthenticatedRequest): Promise<Download[] | null> => {
+export const getAllDownloadsService = async(
+    req: AuthenticatedRequest
+    ): Promise<Download[] | null> => {
     try {
         let downloads: Download[] | null;
 
@@ -43,8 +44,7 @@ export const getAllDownloadsService = async (req: AuthenticatedRequest): Promise
     }
 };
 
-//Create a new download depending about memberships and game required kind of memberships service
-export const createDownloadService = async (
+export const createDownloadService = async(
     download: Download,
     customerId: string
 ): Promise<ObjectId | null> => {
@@ -55,7 +55,7 @@ export const createDownloadService = async (
         return null;
     }
 };
-// Get a single download by ID  and just by an authenticated admin service
+
 export const getDownloadByIdService = async (downloadId: string): Promise<Download | null> => {
     try {
         return await getDownloadByIdRepository(downloadId);
@@ -65,10 +65,12 @@ export const getDownloadByIdService = async (downloadId: string): Promise<Downlo
     }
 };
 
-// Delete an own download service
-export const deleteDownloadService = async (req: AuthenticatedRequest, downloadId: string): Promise<boolean> => {
+export const deleteDownloadService = async(
+    req: AuthenticatedRequest, 
+    downloadId: string): Promise<boolean> => {
     try {
         const customerId = req.userId;
+        
         return await deleteDownloadRepository(downloadId, customerId!);
     } catch (error) {
         console.error('Error deleting download:', error);

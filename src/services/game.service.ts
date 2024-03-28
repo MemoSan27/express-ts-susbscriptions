@@ -3,10 +3,13 @@ import dbConnection from '../configs/database/mongo.conn';
 import { Game } from '../models/Game';
 import { Membership } from '../models/Membership';
 import cache from '../middlewares/cache/nodeCacheInstance';
-import { createGameRepository, deleteGameByIdRepository, getAllGamesRepository, getGameByIdRepository, updateGameRepository } from '../repositories/game.repository';
+import { createGameRepository, 
+    deleteGameByIdRepository, 
+    getAllGamesRepository, 
+    getGameByIdRepository, 
+    updateGameRepository } from '../repositories/game.repository';
 
-// Get all games service chached for 5 minutes
-export const getAllGamesService = async (): Promise<Game[] | null> => {
+export const getAllGamesService = async(): Promise<Game[] | null> => {
     try {
         const cachedGames = cache.get<Game[]>('allGames');
 
@@ -28,8 +31,7 @@ export const getAllGamesService = async (): Promise<Game[] | null> => {
     }
 };
 
-// Create a new game service
-export const createGameService = async (game: Game): Promise<ObjectId | null> => {
+export const createGameService = async(game: Game): Promise<ObjectId | null> => {
     try {
         const result = await createGameRepository(game);
 
@@ -44,7 +46,6 @@ export const createGameService = async (game: Game): Promise<ObjectId | null> =>
     }
 };
 
-// Get a single game by its ID service
 export const getGameByIdService = async (gameId: string): Promise<Game | null> => {
     try {
         return await getGameByIdRepository(gameId);
@@ -54,7 +55,6 @@ export const getGameByIdService = async (gameId: string): Promise<Game | null> =
     }
 };
 
-// Delete a game by ID service
 export const deleteGameByIdService = async (gameId: string): Promise<boolean> => {
     try {
         const result = await deleteGameByIdRepository(gameId);
@@ -70,8 +70,6 @@ export const deleteGameByIdService = async (gameId: string): Promise<boolean> =>
     }
 };
 
-
-// Update a game by its ID service
 export const updateGameService = async (
     gameId: string, 
     updatedGameData: Partial<Game>

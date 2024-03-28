@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import * as HealthService from '../services/health.service';
-import colors from 'colors';
 
 export const checkHealthController = async (
   req: Request, 

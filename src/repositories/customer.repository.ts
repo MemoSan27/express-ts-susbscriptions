@@ -1,12 +1,12 @@
 import { Db, Filter, ObjectId } from "mongodb";
 import dbConnection from "../configs/database/mongo.conn";
 import { Customer } from "../models/Customer";
-import { PaginationOptions, SearchOptions, SortOptions } from "../utils/interfaces/repositories/optionsRepository";
+import { PaginationOptions, SortOptions } from "../utils/interfaces/repositories/optionsRepository";
 import bcrypt from 'bcrypt'
 import { Membership } from "../models/Membership";
 
 
-export const getAllCustomersRepository = async (
+export const getAllCustomersRepository = async(
   paginationOptions: PaginationOptions,
   sortOptions: SortOptions
 ): Promise<Customer[] | null> => {
@@ -33,7 +33,9 @@ export const getAllCustomersRepository = async (
   }
 };
 
-export const createCustomerRepository = async (customer: Customer): Promise<ObjectId | null> => {
+export const createCustomerRepository = async(
+    customer: Customer
+    ): Promise<ObjectId | null> => {
   try {
       const db: Db = await dbConnection(); 
       const membershipsCollection = db.collection<Membership>('memberships');
@@ -44,7 +46,6 @@ export const createCustomerRepository = async (customer: Customer): Promise<Obje
           throw new Error(`Membership with id: ${customer.membershipId} does not exist.`);
       }
 
-      // Hashing the password before storing it
       const hashedPassword = await bcrypt.hash(customer.password, 10);
       const customerToInsert = { ...customer, password: hashedPassword };
 
@@ -57,7 +58,9 @@ export const createCustomerRepository = async (customer: Customer): Promise<Obje
   }
 };
 
-export const getCustomerByIdRepository = async (customerId: string): Promise<Customer | null> => {
+export const getCustomerByIdRepository = async(
+    customerId: string
+    ): Promise<Customer | null> => {
   try {
       const db: Db = await dbConnection();
 
@@ -75,7 +78,9 @@ export const getCustomerByIdRepository = async (customerId: string): Promise<Cus
   }
 };
 
-export const checkExistingCustomerEmailRepository = async (email: string): Promise<boolean> => {
+export const checkExistingCustomerEmailRepository = async(
+    email: string
+    ): Promise<boolean> => {
   try {
       const db: Db = await dbConnection();
       const customers = db.collection<Customer>('customers');
@@ -84,11 +89,13 @@ export const checkExistingCustomerEmailRepository = async (email: string): Promi
       return !!existingCustomer;
   } catch (error) {
       console.error('Error checking existing email:', error);
-      return true; // En caso de error, se asume que el email ya existe para evitar que se use accidentalmente.
+      return true; 
   }
 };
 
-export const deleteCustomerByIdRepository = async (customerId: string): Promise<boolean> => {
+export const deleteCustomerByIdRepository = async(
+    customerId: string
+    ): Promise<boolean> => {
   try {
       const db: Db = await dbConnection();
 
@@ -110,7 +117,7 @@ export const deleteCustomerByIdRepository = async (customerId: string): Promise<
   }
 };
 
-export const updateNameAndLastnameRepository = async (
+export const updateNameAndLastnameRepository = async(
   userId: string, 
   name: string, 
   lastname: string
@@ -139,7 +146,7 @@ export const updateNameAndLastnameRepository = async (
   }
 };
 
-export const changePasswordRepository = async (
+export const changePasswordRepository = async(
   userId: ObjectId, 
   oldPassword: string, 
   newPassword: string

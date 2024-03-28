@@ -3,7 +3,7 @@ import dbConnection from "../configs/database/mongo.conn";
 import { Game } from "../models/Game";
 import { Membership } from "../models/Membership";
 
-export const getAllGamesRepository = async (): Promise<Game[] | null> => {
+export const getAllGamesRepository = async(): Promise<Game[] | null> => {
     try {
         const db: Db = await dbConnection();
         const games = await db.collection<Game>('games').find().toArray();
@@ -15,7 +15,9 @@ export const getAllGamesRepository = async (): Promise<Game[] | null> => {
     }
 };
 
-export const createGameRepository = async (game: Game): Promise<ObjectId | null> => {
+export const createGameRepository = async(
+    game: Game
+    ): Promise<ObjectId | null> => {
     try {
         const db: Db = await dbConnection(); 
     
@@ -43,7 +45,9 @@ export const createGameRepository = async (game: Game): Promise<ObjectId | null>
     }
 };
 
-export const getGameByIdRepository = async (gameId: string): Promise<Game | null> => {
+export const getGameByIdRepository = async(
+    gameId: string
+    ): Promise<Game | null> => {
     try {
         const db: Db = await dbConnection();
 
@@ -61,7 +65,9 @@ export const getGameByIdRepository = async (gameId: string): Promise<Game | null
     }
 };
 
-export const deleteGameByIdRepository = async (gameId: string): Promise<boolean> => {
+export const deleteGameByIdRepository = async(
+    gameId: string
+    ): Promise<boolean> => {
     try {
         const db: Db = await dbConnection();
 
@@ -79,7 +85,7 @@ export const deleteGameByIdRepository = async (gameId: string): Promise<boolean>
     }
 };
 
-export const updateGameRepository = async (
+export const updateGameRepository = async(
     gameId: string, 
     updatedGameData: Partial<Game>
 ): Promise<boolean> => {

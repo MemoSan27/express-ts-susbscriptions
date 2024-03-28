@@ -8,7 +8,6 @@ import { changePasswordService,
     loginCustomerService, 
     updateNameAndLastnameService } from '../services/customer.service';
 import { Customer } from '../models/Customer';
-import bcrypt from 'bcrypt'
 import dbConnection from '../configs/database/mongo.conn';
 import { AuthService } from '../utils/interfaces/auth.interface';
 import { AuthenticatedCustomerRequest } from '../middlewares/jwt/verifyCustomerJwt';
@@ -17,7 +16,6 @@ import { AuthenticatedRequest } from '../middlewares/jwt/verifyAdminJwt';
 import { PaginationOptions, SortOptions } from '../utils/interfaces/repositories/optionsRepository';
 
 
-// Get all customers controller just by authenticated admin
 export const getAllCustomersController = async (
     req: AuthenticatedRequest,
     res: Response
@@ -31,7 +29,6 @@ export const getAllCustomersController = async (
         const customers = await getAllCustomersService(paginationOptions, sortOptions);
 
         if (customers !== null) {
-            // Excluir la contraseña de cada cliente antes de enviar la respuesta
             const customersWithoutPassword = customers.map(customer => ({
                 _id: customer._id,
                 name: customer.name,
@@ -50,7 +47,6 @@ export const getAllCustomersController = async (
     }
 };
 
-//Create new customer controller
 export const createCustomerController = async (
     req: Request,
     res: Response
@@ -82,7 +78,6 @@ export const createCustomerController = async (
     }
 };
 
-//Get a customer info by id, but just by an authenticated admin
 export const getCustomerByIdController = async(
     req: AuthenticatedRequest, 
     res: Response
@@ -108,7 +103,6 @@ export const getCustomerByIdController = async(
     }
 }
 
-// Delete a customer by ID by an authorized admin controller
 export const deleteCustomerByIdController = async(
     req: Request, 
     res: Response
@@ -131,7 +125,6 @@ export const deleteCustomerByIdController = async(
     }
 }
 
-//Update a customer's name and lastname, but just by an authenticated admin
 export const updateNameAndLastnameController = async(
     req: Request, 
     res: Response
@@ -153,8 +146,6 @@ export const updateNameAndLastnameController = async(
     }
 };
 
-
-//Change authenticated customer password controller
 export const changePasswordController = async(
     req: AuthenticatedCustomerRequest, 
     res: Response

@@ -4,13 +4,18 @@ import jwt from 'jsonwebtoken';
 import { Administ } from '../models/Admin';
 import dotenv from 'dotenv';
 import { AuthService } from '../utils/interfaces/auth.interface';
-import dbConnection from '../configs/database/mongo.conn';
-import { changePasswordRepository, checkExistingAdminEmailRepository, createAdminRepository, deleteAdminByIdRepository, getAdminByIdRepository, getAllAdminsRepository, updateNameAndLastnameRepository } from '../repositories/admin.repository';
+import { changePasswordRepository, 
+  checkExistingAdminEmailRepository, 
+  createAdminRepository, 
+  deleteAdminByIdRepository, 
+  getAdminByIdRepository, 
+  getAllAdminsRepository, 
+  updateNameAndLastnameRepository 
+} from '../repositories/admin.repository';
 
 dotenv.config();
 
-// Get all admins service
-export const getAllAdminsService = async (): Promise<Administ[] | null> => {
+export const getAllAdminsService = async(): Promise<Administ[] | null> => {
   try {
       return await getAllAdminsRepository();
   } catch (error) {
@@ -19,8 +24,9 @@ export const getAllAdminsService = async (): Promise<Administ[] | null> => {
   }
 };
 
-// Create new admin service
-export const createAdminService = async (admin: Administ): Promise<ObjectId | null> => {
+export const createAdminService = async(
+  admin: Administ
+  ): Promise<ObjectId | null> => {
   try {
       return await createAdminRepository(admin);
   } catch (error) {
@@ -29,8 +35,9 @@ export const createAdminService = async (admin: Administ): Promise<ObjectId | nu
   }
 };
 
-// Get a single admin by id service
-export const getAdminByIdService = async (adminId: string): Promise<Administ | null> => {
+export const getAdminByIdService = async(
+  adminId: string
+  ): Promise<Administ | null> => {
   try {
       return await getAdminByIdRepository(adminId);
   } catch (error) {
@@ -39,8 +46,9 @@ export const getAdminByIdService = async (adminId: string): Promise<Administ | n
   }
 };
 
-// Delete an admin by ID service
-export const deleteAdminByIdService = async (adminId: string): Promise<boolean> => {
+export const deleteAdminByIdService = async(
+  adminId: string
+  ): Promise<boolean> => {
   try {
       return await deleteAdminByIdRepository(adminId);
   } catch (error) {
@@ -49,8 +57,7 @@ export const deleteAdminByIdService = async (adminId: string): Promise<boolean> 
   }
 };
 
-// Update just name or lastname service with administrator assistance
-export const updateNameAndLastnameService = async (
+export const updateNameAndLastnameService = async(
   adminId: string, 
   name: string
 ): Promise<boolean> => {
@@ -62,8 +69,9 @@ export const updateNameAndLastnameService = async (
   }
 };
 
-//Checks if an email already exists service
-export const checkExistingAdminEmailService = async (email: string): Promise<boolean> => {
+export const checkExistingAdminEmailService = async(
+  email: string
+  ): Promise<boolean> => {
   try {
       return await checkExistingAdminEmailRepository(email);
   } catch (error) {
@@ -72,7 +80,6 @@ export const checkExistingAdminEmailService = async (email: string): Promise<boo
   }
 };
 
-// Change authenticated admin password service
 export const changePasswordService = async (
   adminId: ObjectId, 
   oldPassword: string, 
@@ -86,7 +93,6 @@ export const changePasswordService = async (
   }
 };
 
-//Admin Login Service
 export const loginAdminService = (db: Db): AuthService => {
     const admins: Collection<Administ> = db.collection<Administ>('admins');
   
