@@ -4,6 +4,7 @@ import { Customer } from "../models/Customer";
 import { PaginationOptions, SortOptions } from "../utils/interfaces/repositories/optionsRepository";
 import bcrypt from 'bcrypt'
 import { Membership } from "../models/Membership";
+import { deleteDownloadsByCustomerIdRepository } from "./downloads.repository";
 
 
 export const getAllCustomersRepository = async(
@@ -93,28 +94,27 @@ export const checkExistingCustomerEmailRepository = async(
   }
 };
 
-export const deleteCustomerByIdRepository = async(
-    customerId: string
-    ): Promise<boolean> => {
-  try {
-      const db: Db = await dbConnection();
+export const deleteCustomerByIdRepository = async (customerId: string): Promise<boolean> => {
+    try {
+        const db: Db = await dbConnection();
 
-      if (!ObjectId.isValid(customerId)) {
-          throw new Error('Invalid customer ID');
-      }
+        if (!ObjectId.isValid(customerId)) {
+            throw new Error('Invalid customer ID');
+        }
 
-      const filter = { _id: new ObjectId(customerId) };
-      const result = await db.collection<Customer>('customers').deleteOne(filter);
+        const filter = { _id: new ObjectId(customerId) };
+        const result = await db.collection('customers').deleteOne(filter);
 
-      if (result.deletedCount === 1) {
-          return true;
-      } else {
-          return false;
-      }
-  } catch (error) {
-      console.error('Error deleting customer:', error);
-      return false;
-  }
+        if (result.deletedCount === 1) {
+            await deleteDownloadsByCustomerIdRepository(customerId);
+            return true;
+        } else {
+            return false;
+        }
+    } catch (error) {
+        console.error('Error deleting customer:', error);
+        return false;
+    }
 };
 
 export const updateNameAndLastnameRepository = async(
