@@ -7,7 +7,7 @@ import { AuthService } from '../utils/interfaces/auth.interface';
 import dbConnection from '../configs/database/mongo.conn';
 import { Membership } from '../models/Membership';
 import cache from '../middlewares/cache/nodeCacheInstance';
-import { createCustomerRepository, getAllCustomersRepository } from '../repositories/customer.repository';
+import { changePasswordRepository, checkExistingCustomerEmailRepository, createCustomerRepository, deleteCustomerByIdRepository, getAllCustomersRepository, getCustomerByIdRepository, updateNameAndLastnameRepository } from '../repositories/customer.repository';
 import { PaginationOptions, SortOptions } from '../utils/interfaces/repositories/optionsRepository';
 
 dotenv.config();
@@ -53,125 +53,65 @@ export const createCustomerService = async (customer: Customer): Promise<ObjectI
 };
 
 //Get a single membership by id service
-export const getCustomerByIdService = async(
-    customerId: string
-    ): Promise<Customer | null> => {
+export const getCustomerByIdService = async (customerId: string): Promise<Customer | null> => {
     try {
-        const db: Db = await dbConnection();
-
-        if (!ObjectId.isValid(customerId)) {
-            throw new Error('Invalid customer ID');
-        }
-
-        const filter = { _id: new ObjectId(customerId) };
-        const customer = await db.collection<Customer>('customers').findOne(filter);
-
-        return customer; 
+        return await getCustomerByIdRepository(customerId);
     } catch (error) {
         console.error('Error getting customer by ID: ', error);
         return null;
     }
-}
+};
 
 //Service that checks if an email exist in database
-export const checkExistingCustomerEmailService = async(
-    email: string
-    ): Promise<boolean> => {
+export const checkExistingCustomerEmailService = async (email: string): Promise<boolean> => {
     try {
-        const db: Db = await dbConnection();
-        const customers: Collection<Customer> = db.collection<Customer>('customers');
-        const existingCustomer = await customers.findOne({ email });
-
-        return !!existingCustomer; 
+        return await checkExistingCustomerEmailRepository(email);
     } catch (error) {
         console.error('Error checking existing email:', error);
-        return true; 
+        return true;
     }
 };
 
 //Delete a customer by ID by an authorized admin
-export const deleteCustomerByIdService = async(
-    customerId: string
-    ): Promise<boolean> => {
+export const deleteCustomerByIdService = async (customerId: string): Promise<boolean> => {
     try {
-        const db: Db = await dbConnection();
-
-        if (!ObjectId.isValid(customerId)) {
-            throw new Error('Invalid customer ID');
-        }
-
-        const filter = { _id: new ObjectId(customerId) };
-        const result = await db.collection<Customer>('customers').deleteOne(filter);
-
-        if (result.deletedCount === 1) {
+        const result = await deleteCustomerByIdRepository(customerId);
+        if (result) {
             cache.del('allCustomers');
-            return true;
-        } else {
-            return false;
         }
+        return result;
     } catch (error) {
         console.error('Error deleting customer:', error);
         return false;
     }
-}
+};
 
 //Update just name or lastname service with administrator assitance
-export const updateNameAndLastnameService = async(
+export const updateNameAndLastnameService = async (
     userId: string, 
     name: string, 
     lastname: string
-    ): Promise<boolean> => {
+): Promise<boolean> => {
     try {
-        const db = await dbConnection();
-
-        if (!ObjectId.isValid(userId)) {
-            throw new Error('Invalid user ID');
-        }
-
-        const filter: Filter<Customer> = { _id: new ObjectId(userId) }; 
-       
-
-        const result = await db.collection<Customer>('customers').updateOne(
-            filter, 
-            { $set: { name, lastname } });
-
-        if (result.modifiedCount === 1) {
+        const result = await updateNameAndLastnameRepository(userId, name, lastname);
+        if (result) {
             cache.del('allCustomers');
-            return true;
-        } else {
-            return false;
         }
+        return result;
     } catch (error) {
         console.error('Error updating name and lastname: ', error);
-        throw error;
+        return false;
     }
 };
 
 //Change authenticated customer password service
-export const changePasswordService = async(
+export const changePasswordService = async (
     userId: ObjectId, 
     oldPassword: string, 
     newPassword: string
-    ): Promise<boolean> => {
+): Promise<boolean> => {
     try {
-        const db: Db = await dbConnection();
-        const customers = db.collection('customers');
-        const user = await customers.findOne({ _id: userId });
-
-        if (!user) {
-            throw new Error('User not found');
-        }
-
-        const passwordMatch = await bcrypt.compare(oldPassword, user.password);
-
-        if (!passwordMatch) {
-            return false;
-        }
-
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
-        await customers.updateOne({ _id: userId }, { $set: { password: hashedPassword } });
-
-        return true;
+        return await changePasswordRepository(userId, oldPassword, newPassword);
     } catch (error) {
         console.error('Error in process: ', error);
         throw error;

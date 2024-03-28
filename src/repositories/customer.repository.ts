@@ -1,4 +1,4 @@
-import { Db, ObjectId } from "mongodb";
+import { Db, Filter, ObjectId } from "mongodb";
 import dbConnection from "../configs/database/mongo.conn";
 import { Customer } from "../models/Customer";
 import { PaginationOptions, SearchOptions, SortOptions } from "../utils/interfaces/repositories/optionsRepository";
@@ -54,5 +54,117 @@ export const createCustomerRepository = async (customer: Customer): Promise<Obje
   } catch (error) {
       console.error('Error creating customer: ', error);
       return null;
+  }
+};
+
+export const getCustomerByIdRepository = async (customerId: string): Promise<Customer | null> => {
+  try {
+      const db: Db = await dbConnection();
+
+      if (!ObjectId.isValid(customerId)) {
+          throw new Error('Invalid customer ID');
+      }
+
+      const filter = { _id: new ObjectId(customerId) };
+      const customer = await db.collection<Customer>('customers').findOne(filter);
+
+      return customer; 
+  } catch (error) {
+      console.error('Error getting customer by ID: ', error);
+      return null;
+  }
+};
+
+export const checkExistingCustomerEmailRepository = async (email: string): Promise<boolean> => {
+  try {
+      const db: Db = await dbConnection();
+      const customers = db.collection<Customer>('customers');
+      const existingCustomer = await customers.findOne({ email });
+
+      return !!existingCustomer;
+  } catch (error) {
+      console.error('Error checking existing email:', error);
+      return true; // En caso de error, se asume que el email ya existe para evitar que se use accidentalmente.
+  }
+};
+
+export const deleteCustomerByIdRepository = async (customerId: string): Promise<boolean> => {
+  try {
+      const db: Db = await dbConnection();
+
+      if (!ObjectId.isValid(customerId)) {
+          throw new Error('Invalid customer ID');
+      }
+
+      const filter = { _id: new ObjectId(customerId) };
+      const result = await db.collection<Customer>('customers').deleteOne(filter);
+
+      if (result.deletedCount === 1) {
+          return true;
+      } else {
+          return false;
+      }
+  } catch (error) {
+      console.error('Error deleting customer:', error);
+      return false;
+  }
+};
+
+export const updateNameAndLastnameRepository = async (
+  userId: string, 
+  name: string, 
+  lastname: string
+): Promise<boolean> => {
+  try {
+      const db: Db = await dbConnection();
+
+      if (!ObjectId.isValid(userId)) {
+          throw new Error('Invalid user ID');
+      }
+
+      const filter: Filter<Customer> = { _id: new ObjectId(userId) }; 
+
+      const result = await db.collection<Customer>('customers').updateOne(
+          filter, 
+          { $set: { name, lastname } });
+
+      if (result.modifiedCount === 1) {
+          return true;
+      } else {
+          return false;
+      }
+  } catch (error) {
+      console.error('Error updating name and lastname: ', error);
+      return false;
+  }
+};
+
+export const changePasswordRepository = async (
+  userId: ObjectId, 
+  oldPassword: string, 
+  newPassword: string
+): Promise<boolean> => {
+  try {
+      const db: Db = await dbConnection();
+      const customers = db.collection('customers');
+      const user = await customers.findOne({ _id: userId });
+
+      if (!user) {
+          throw new Error('User not found');
+      }
+
+      const passwordMatch = await bcrypt.compare(oldPassword, user.password);
+
+      if (!passwordMatch) {
+          return false;
+      }
+
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      await customers.updateOne({ _id: userId }, { $set: { password: hashedPassword } });
+
+      return true;
+  } catch (error) {
+      console.error('Error in process: ', error);
+      return false;
   }
 };
