@@ -6,16 +6,26 @@ import dotenv from 'dotenv';
 import { AuthService } from '../utils/interfaces/auth.interface';
 import dbConnection from '../configs/database/mongo.conn';
 import { Membership } from '../models/Membership';
+import cache from '../middlewares/cache/nodeCacheInstance';
 
 dotenv.config();
 
 // Get all customers service
 export const getAllCustomersService = async(): Promise<Customer[] | null> => {
     try {
-        const db: Db = await dbConnection(); 
-        const games = await db.collection<Customer>('customers').find().toArray();
+        const cachedCustomers = cache.get<Customer[]>('allCustomers');
 
-        return games; 
+        if (cachedCustomers) {
+            console.log('Cache hit for all customers!');
+            return cachedCustomers;
+        }
+
+        const db: Db = await dbConnection(); 
+        const customers = await db.collection<Customer>('customers').find().toArray();
+
+        cache.set('allCustomers', customers, 900);
+
+        return customers; 
     } catch (error) {
         console.error('Error getting customers: ', error);
         return null;
@@ -41,6 +51,8 @@ export const createCustomerService = async (
         const customerToInsert = { ...customer, password: hashedPassword };
 
         const result = await db.collection<Customer>('customers').insertOne(customerToInsert);
+
+        cache.del('allCustomers');
 
         return result.insertedId ? new ObjectId(result.insertedId) : null;
     } catch (error) {
@@ -100,7 +112,12 @@ export const deleteCustomerByIdService = async(
         const filter = { _id: new ObjectId(customerId) };
         const result = await db.collection<Customer>('customers').deleteOne(filter);
 
-        return result.deletedCount === 1;
+        if (result.deletedCount === 1) {
+            cache.del('allCustomers');
+            return true;
+        } else {
+            return false;
+        }
     } catch (error) {
         console.error('Error deleting customer:', error);
         return false;
@@ -127,7 +144,12 @@ export const updateNameAndLastnameService = async(
             filter, 
             { $set: { name, lastname } });
 
-        return result.modifiedCount === 1;
+        if (result.modifiedCount === 1) {
+            cache.del('allCustomers');
+            return true;
+        } else {
+            return false;
+        }
     } catch (error) {
         console.error('Error updating name and lastname: ', error);
         throw error;
