@@ -1,7 +1,5 @@
-import { Db, ObjectId, Filter } from 'mongodb';
-import dbConnection from '../configs/database/mongo.conn';
+import { ObjectId} from 'mongodb';
 import { Game } from '../models/Game';
-import { Membership } from '../models/Membership';
 import cache from '../middlewares/cache/nodeCacheInstance';
 import { createGameRepository, 
     deleteGameByIdRepository, 
