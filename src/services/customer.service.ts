@@ -1,13 +1,17 @@
-import { Db, Collection, ObjectId, Filter } from 'mongodb';
+import { Db, Collection, ObjectId } from 'mongodb';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Customer } from '../models/Customer';
 import dotenv from 'dotenv';
 import { AuthService } from '../utils/interfaces/auth.interface';
-import dbConnection from '../configs/database/mongo.conn';
-import { Membership } from '../models/Membership';
 import cache from '../middlewares/cache/nodeCacheInstance';
-import { changePasswordRepository, checkExistingCustomerEmailRepository, createCustomerRepository, deleteCustomerByIdRepository, getAllCustomersRepository, getCustomerByIdRepository, updateNameAndLastnameRepository } from '../repositories/customer.repository';
+import { changePasswordRepository, 
+    checkExistingCustomerEmailRepository, 
+    createCustomerRepository, 
+    deleteCustomerByIdRepository, 
+    getAllCustomersRepository, 
+    getCustomerByIdRepository, 
+    updateNameAndLastnameRepository } from '../repositories/customer.repository';
 import { PaginationOptions, SortOptions } from '../utils/interfaces/repositories/optionsRepository';
 
 dotenv.config();
