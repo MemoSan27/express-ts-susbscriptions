@@ -158,7 +158,6 @@ export const deleteDownloadService = async (
         const deleteResult = await downloadsCollection.deleteOne({ _id: new ObjectId(downloadId), idCustomer: customerId });
 
         if (deleteResult.deletedCount === 1) {
-            // If the download was successfully deleted, remove the 'allDownloads' entry from the cache
             cache.del('allDownloads');
             return true;
         } else {
