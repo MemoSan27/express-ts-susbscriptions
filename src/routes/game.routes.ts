@@ -4,7 +4,7 @@ import { createGameController,
     getAllGamesController, 
     getGameByIdController, 
     updateGameController } from '../controllers/game.controller';
-import { validateGame } from '../middlewares/validators/game.validators';
+import { validateGame } from '../middlewares/validators/game/game.validators';
 import verifyAdminJwt from '../middlewares/jwt/verifyAdminJwt';
 
 const gameRouter: Router = Router();

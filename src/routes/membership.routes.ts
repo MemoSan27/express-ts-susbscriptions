@@ -4,7 +4,7 @@ import { createMembershipController,
     getAllMembershipsController, 
     getMembershipByIdController, 
     updateMembershipController } from '../controllers/membership.controller';
-import { validateMembership } from '../middlewares/validators/membership.validators';
+import { validateMembership } from '../middlewares/validators/membership/membership.validators';
 import verifyAdminJwt from '../middlewares/jwt/verifyAdminJwt';
 
 

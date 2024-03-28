@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { validateCustomer } from '../middlewares/validators/customer.validators';
 import { changePasswordController, 
     createCustomerController, 
     deleteCustomerByIdController, 
@@ -10,7 +9,10 @@ import { changePasswordController,
     updateNameAndLastnameController } from '../controllers/customer.controller';
 import verifyCustomerJwt from '../middlewares/jwt/verifyCustomerJwt';
 import verifyAdminJwt from '../middlewares/jwt/verifyAdminJwt';
-import { validateUpdateCustomer } from '../middlewares/validators/customer.update.validators';
+import { validateCustomer } from '../middlewares/validators/customer/customer.create.validators';
+import { validateUpdateCustomer } from '../middlewares/validators/customer/customer.update.validators';
+import { validateLoginCustomer } from '../middlewares/validators/customer/customer.login.validators';
+import { validateChPassCustomer } from '../middlewares/validators/customer/customer.chspass.validators';
 
 
 const customerRouter: Router = Router();
@@ -20,13 +22,13 @@ customerRouter.route('/')
     .post(validateCustomer, createCustomerController)
 
 customerRouter.route('/login')
-    .post(loginCustomerController)
+    .post(validateLoginCustomer, loginCustomerController)
 
 customerRouter.route('/me')
     .get(verifyCustomerJwt, getLoggedCustomerController)
 
 customerRouter.route('/auth-chpass')
-    .post(verifyCustomerJwt, changePasswordController)    
+    .post(validateChPassCustomer, verifyCustomerJwt, changePasswordController)    
 
 customerRouter.route('/:id')
     .get(verifyAdminJwt, getCustomerByIdController)    
