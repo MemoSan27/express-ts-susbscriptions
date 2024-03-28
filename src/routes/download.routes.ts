@@ -5,6 +5,7 @@ import { createDownloadController,
     getAllDownloadsController, 
     getDownloadByIdController } from '../controllers/download.controller';
 import verifyAdminJwt from '../middlewares/jwt/verifyAdminJwt';
+import { validateCreateDownload } from '../middlewares/validators/downloads/downloads.create.validators';
 
 const downloadRouter: Router = Router();
 
@@ -13,7 +14,7 @@ downloadRouter.route('/')
 
 downloadRouter.route('/customer')
     .get(verifyCustomerJwt, getAllDownloadsController)
-    .post(verifyCustomerJwt, createDownloadController);
+    .post(validateCreateDownload, verifyCustomerJwt, createDownloadController);
 
 downloadRouter.route('/:id')
     .get(verifyAdminJwt, getDownloadByIdController)

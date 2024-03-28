@@ -4,18 +4,19 @@ import { createGameController,
     getAllGamesController, 
     getGameByIdController, 
     updateGameController } from '../controllers/game.controller';
-import { validateGame } from '../middlewares/validators/game/game.validators';
 import verifyAdminJwt from '../middlewares/jwt/verifyAdminJwt';
+import { validateCreateGame } from '../middlewares/validators/game/game.create.validators';
+import { validateUpdateGame } from '../middlewares/validators/game/game.update.validators';
 
 const gameRouter: Router = Router();
 
 gameRouter.route('/')
     .get(getAllGamesController)
-    .post(validateGame, verifyAdminJwt, createGameController);
+    .post(validateCreateGame, verifyAdminJwt, createGameController);
 
 gameRouter.route('/:id')
     .get(getGameByIdController)
     .delete(verifyAdminJwt, deleteGameByIdController)
-    .patch(validateGame, verifyAdminJwt, updateGameController);
+    .patch(validateUpdateGame, verifyAdminJwt, updateGameController);
 
 export { gameRouter };
