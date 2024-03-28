@@ -204,7 +204,7 @@ export const loginCustomerController = async(
 
 export const searchCustomersByMembershipTypeController = async (req: Request, res: Response): Promise<void> => {
     try {
-        const membershipType: string | undefined = req.query.ype?.toString();
+        const membershipType: string | undefined = req.query.type?.toString();
 
         if (!membershipType) {
             res.status(400).json({ message: 'Membership type is required' });

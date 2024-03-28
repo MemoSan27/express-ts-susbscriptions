@@ -3,6 +3,7 @@ import { createGameService,
     deleteGameByIdService, 
     getAllGamesService, 
     getGameByIdService, 
+    searchGamesByMembershipTypeService, 
     updateGameService } 
     from '../services/game.service';
 import { Game } from '../models/Game';
@@ -109,6 +110,34 @@ export const updateGameController = async(
         }
     } catch (error) {
         console.error('Error updating game: ', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+export const searchGamesByMembershipTypeController = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const membershipType: string | undefined = req.query.type?.toString();
+
+        if (!membershipType) {
+            res.status(400).json({ message: 'Membership type is required' });
+            return;
+        }
+
+        const games = await searchGamesByMembershipTypeService(membershipType);
+
+        if (games === null) {
+            res.status(500).json({ message: 'Internal server error' });
+            return;
+        }
+
+        if (games.length === 0) {
+            res.status(404).json({ message: 'No games found with the specified membership type' });
+            return;
+        }
+
+        res.status(200).json(games);
+    } catch (error) {
+        console.error('Error in searchGamesByMembershipTypeController: ', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };

@@ -125,3 +125,22 @@ export const updateGameRepository = async(
         return false;
     }
 };
+
+export const searchGamesByMembershipTypeRepository = async (membershipType: string): Promise<Game[] | null> => {
+    try {
+        const db: Db = await dbConnection();
+
+        const memberships = await db.collection('memberships').find({ type: membershipType }).toArray();
+
+        const membershipIds = memberships.map(membership => membership._id.toString());
+
+        const games = await db.collection<Game>('games')
+            .find({ membershipRequiredId: { $in: membershipIds } })
+            .toArray();
+
+        return games;
+    } catch (error) {
+        console.error('Error searching games by membership type: ', error);
+        return null;
+    }
+};

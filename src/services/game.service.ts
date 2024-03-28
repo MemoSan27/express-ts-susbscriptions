@@ -5,6 +5,7 @@ import { createGameRepository,
     deleteGameByIdRepository, 
     getAllGamesRepository, 
     getGameByIdRepository, 
+    searchGamesByMembershipTypeRepository, 
     updateGameRepository } from '../repositories/game.repository';
 import { PaginationOptions, SortOptions } from '../utils/interfaces/repositories/optionsRepository';
 
@@ -75,5 +76,15 @@ export const updateGameService = async (
     } catch (error) {
         console.error('Error updating game: ', error);
         return false;
+    }
+};
+
+export const searchGamesByMembershipTypeService = async (membershipType: string): Promise<Game[] | null> => {
+    try {
+        const games = await searchGamesByMembershipTypeRepository(membershipType);
+        return games;
+    } catch (error) {
+        console.error('Error in searchGamesByMembershipTypeService: ', error);
+        return null;
     }
 };
