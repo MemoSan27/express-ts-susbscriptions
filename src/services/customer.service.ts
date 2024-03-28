@@ -7,30 +7,36 @@ import { AuthService } from '../utils/interfaces/auth.interface';
 import dbConnection from '../configs/database/mongo.conn';
 import { Membership } from '../models/Membership';
 import cache from '../middlewares/cache/nodeCacheInstance';
+import { getAllCustomersRepository } from '../repositories/customer.repository';
+import { PaginationOptions, SortOptions } from '../utils/interfaces/repositories/optionsRepository';
 
 dotenv.config();
 
 // Get all customers service
-export const getAllCustomersService = async(): Promise<Customer[] | null> => {
+export const getAllCustomersService = async (
+    paginationOptions: PaginationOptions,
+    sortOptions: SortOptions
+): Promise<Customer[] | null> => {
     try {
-        const cachedCustomers = cache.get<Customer[]>('allCustomers');
+        const cacheKey = JSON.stringify({ paginationOptions, sortOptions });
+        const cachedCustomers = cache.get<Customer[]>(cacheKey);
 
         if (cachedCustomers) {
             console.log('Cache hit for all customers!');
             return cachedCustomers;
         }
 
-        const db: Db = await dbConnection(); 
-        const customers = await db.collection<Customer>('customers').find().toArray();
-
-        cache.set('allCustomers', customers, 300);
-
-        return customers; 
+        const customers = await getAllCustomersRepository(paginationOptions, sortOptions);
+        if (customers !== null) {
+            cache.set(cacheKey, customers, 300);
+        }
+        
+        return customers;
     } catch (error) {
         console.error('Error getting customers: ', error);
         return null;
     }
-}
+};
 
 //Create new customer service
 export const createCustomerService = async (

@@ -5,31 +5,28 @@ import { PaginationOptions, SearchOptions, SortOptions } from "../utils/interfac
 
 
 export const getAllCustomersRepository = async (
-    paginationOptions: PaginationOptions = { page: 1, limit: 10 },
-    sortOptions: SortOptions = { sortBy: '_id', sortOrder: 1 },
-    searchOptions: SearchOptions = {}
-  ): Promise<Customer[] | null> => {
-    try {
+  paginationOptions: PaginationOptions,
+  sortOptions: SortOptions
+): Promise<Customer[] | null> => {
+  try {
       const db: Db = await dbConnection();
-      const { page = 1, limit = 10 } = paginationOptions;
-      const { sortBy = '_id', sortOrder = 1 } = sortOptions;
-      const { query = '' } = searchOptions;
-  
-      // Construye el objeto de ordenamiento correctamente
+      const { page = 1, limit = 5 } = paginationOptions;
+      const { sortBy = 'lastname', sortOrder = 1 } = sortOptions;
+
       const sortQuery: any = {};
       sortQuery[sortBy] = sortOrder;
-  
+
       const customers = await db
-        .collection<Customer>('customers')
-        .find({ name: new RegExp(query, 'i') }) // Case-insensitive search by name
-        .sort(sortQuery)
-        .skip((page - 1) * limit)
-        .limit(limit)
-        .toArray();
-  
+          .collection<Customer>('customers')
+          .find()
+          .sort(sortQuery)
+          .skip((page - 1) * limit)
+          .limit(limit)
+          .toArray();
+
       return customers;
-    } catch (error) {
+  } catch (error) {
       console.error('Error getting customers: ', error);
       return null;
-    }
-  };
+  }
+};
