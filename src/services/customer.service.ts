@@ -23,7 +23,7 @@ export const getAllCustomersService = async(): Promise<Customer[] | null> => {
         const db: Db = await dbConnection(); 
         const customers = await db.collection<Customer>('customers').find().toArray();
 
-        cache.set('allCustomers', customers, 900);
+        cache.set('allCustomers', customers, 300);
 
         return customers; 
     } catch (error) {
