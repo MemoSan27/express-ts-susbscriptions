@@ -6,6 +6,7 @@ import { changePasswordController,
     getCustomerByIdController, 
     getLoggedCustomerController, 
     loginCustomerController, 
+    searchCustomersByMembershipTypeController, 
     updateNameAndLastnameController } from '../controllers/customer.controller';
 import verifyCustomerJwt from '../middlewares/jwt/verifyCustomerJwt';
 import verifyAdminJwt from '../middlewares/jwt/verifyAdminJwt';
@@ -20,6 +21,9 @@ const customerRouter: Router = Router();
 customerRouter.route('/')
     .get(verifyAdminJwt, getAllCustomersController)
     .post(validateCustomer, createCustomerController)
+
+customerRouter.route('/search')
+    .get(verifyAdminJwt, searchCustomersByMembershipTypeController)    
 
 customerRouter.route('/login')
     .post(validateLoginCustomer, loginCustomerController)
