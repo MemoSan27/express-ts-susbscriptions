@@ -1,35 +1,26 @@
-import { Db, ObjectId, Filter } from 'mongodb';
-import dbConnection from '../configs/database/mongo.conn';
+import { ObjectId} from 'mongodb';
 import { Game } from '../models/Game';
-import { Membership } from '../models/Membership';
 import cache from '../middlewares/cache/nodeCacheInstance';
 import { createGameRepository, 
     deleteGameByIdRepository, 
     getAllGamesRepository, 
     getGameByIdRepository, 
+    searchGamesByMembershipTypeRepository, 
     updateGameRepository } from '../repositories/game.repository';
+import { PaginationOptions, SortOptions } from '../utils/interfaces/repositories/optionsRepository';
 
-export const getAllGamesService = async(): Promise<Game[] | null> => {
-    try {
-        const cachedGames = cache.get<Game[]>('allGames');
-
-        if (cachedGames) {
-            console.log('Cache hit for all games!');
-            return cachedGames;
+    export const getAllGamesService = async (
+        paginationOptions: PaginationOptions,
+        sortOptions: SortOptions
+    ): Promise<Game[] | null> => {
+        try {
+            const games = await getAllGamesRepository(paginationOptions, sortOptions);
+            return games;
+        } catch (error) {
+            console.error('Error in getAllGamesService: ', error);
+            return null;
         }
-        
-        const games = await getAllGamesRepository();
-        
-        if (games !== null) {
-            cache.set('allGames', games, 300);
-        }
-
-        return games; 
-    } catch (error) {
-        console.error('Error getting games: ', error);
-        return null;
-    }
-};
+    };
 
 export const createGameService = async(game: Game): Promise<ObjectId | null> => {
     try {
@@ -85,5 +76,15 @@ export const updateGameService = async (
     } catch (error) {
         console.error('Error updating game: ', error);
         return false;
+    }
+};
+
+export const searchGamesByMembershipTypeService = async (membershipType: string): Promise<Game[] | null> => {
+    try {
+        const games = await searchGamesByMembershipTypeRepository(membershipType);
+        return games;
+    } catch (error) {
+        console.error('Error in searchGamesByMembershipTypeService: ', error);
+        return null;
     }
 };

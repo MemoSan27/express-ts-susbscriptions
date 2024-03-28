@@ -3,6 +3,7 @@ import { createGameController,
     deleteGameByIdController, 
     getAllGamesController, 
     getGameByIdController, 
+    searchGamesByMembershipTypeController, 
     updateGameController } from '../controllers/game.controller';
 import verifyAdminJwt from '../middlewares/jwt/verifyAdminJwt';
 import { validateCreateGame } from '../middlewares/validators/game/game.create.validators';
@@ -13,6 +14,9 @@ const gameRouter: Router = Router();
 gameRouter.route('/')
     .get(getAllGamesController)
     .post(validateCreateGame, verifyAdminJwt, createGameController);
+
+gameRouter.route('/search')
+    .get(searchGamesByMembershipTypeController)    
 
 gameRouter.route('/:id')
     .get(getGameByIdController)

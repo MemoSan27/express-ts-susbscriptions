@@ -1,4 +1,4 @@
-import { Db, Collection, ObjectId, Filter } from 'mongodb';
+import { Db, Collection, ObjectId } from 'mongodb';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Administ } from '../models/Admin';

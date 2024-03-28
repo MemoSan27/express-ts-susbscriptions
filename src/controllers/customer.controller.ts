@@ -6,6 +6,7 @@ import { changePasswordService,
     getAllCustomersService, 
     getCustomerByIdService, 
     loginCustomerService, 
+    searchCustomersByMembershipTypeService, 
     updateNameAndLastnameService } from '../services/customer.service';
 import { Customer } from '../models/Customer';
 import dbConnection from '../configs/database/mongo.conn';
@@ -198,5 +199,33 @@ export const loginCustomerController = async(
     } catch (error) {
       console.error('Error in login process: ', error);
       res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+export const searchCustomersByMembershipTypeController = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const membershipType: string | undefined = req.query.type?.toString();
+
+        if (!membershipType) {
+            res.status(400).json({ message: 'Membership type is required' });
+            return;
+        }
+
+        const customers = await searchCustomersByMembershipTypeService(membershipType);
+
+        if (customers === null) {
+            res.status(500).json({ message: 'Internal server error' });
+            return;
+        }
+
+        if (customers.length === 0) {
+            res.status(404).json({ message: 'No customers found with the specified membership type' });
+            return;
+        }
+
+        res.status(200).json(customers);
+    } catch (error) {
+        console.error('Error in searchCustomersByMembershipTypeController: ', error);
+        res.status(500).json({ message: 'Internal server error' });
     }
 };

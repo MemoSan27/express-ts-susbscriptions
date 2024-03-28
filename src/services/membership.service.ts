@@ -1,5 +1,4 @@
-import { Db, ObjectId, Filter } from 'mongodb';
-import dbConnection from '../configs/database/mongo.conn';
+import { ObjectId } from 'mongodb';
 import { Membership } from '../models/Membership';
 import { createMembershipRepository, 
     deleteMembershipByIdRepository, 

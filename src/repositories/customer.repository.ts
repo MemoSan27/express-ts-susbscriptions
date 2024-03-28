@@ -175,3 +175,22 @@ export const changePasswordRepository = async(
       return false;
   }
 };
+
+export const searchCustomersByMembershipTypeRepository = async (membershipType: string): Promise<Customer[] | null> => {
+    try {
+        const db: Db = await dbConnection();
+
+        const memberships = await db.collection('memberships').find({ type: membershipType }).toArray();
+
+        const membershipIds = memberships.map(membership => membership._id.toString());
+
+        const customers = await db.collection<Customer>('customers')
+            .find({ membershipId: { $in: membershipIds } })
+            .toArray();
+
+        return customers;
+    } catch (error) {
+        console.error('Error searching customers by membership type: ', error);
+        return null;
+    }
+};

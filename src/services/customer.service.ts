@@ -11,6 +11,7 @@ import { changePasswordRepository,
     deleteCustomerByIdRepository, 
     getAllCustomersRepository, 
     getCustomerByIdRepository, 
+    searchCustomersByMembershipTypeRepository, 
     updateNameAndLastnameRepository } from '../repositories/customer.repository';
 import { PaginationOptions, SortOptions } from '../utils/interfaces/repositories/optionsRepository';
 
@@ -155,4 +156,35 @@ export const loginCustomerService = (db: Db): AuthService => {
     };
 
     return { login };
+};
+
+export const searchCustomersByMembershipTypeService = async (membershipType: string): Promise<Partial<Customer>[] | null> => {
+    try {
+        const cacheKey = `searchCustomers_${membershipType}`;
+
+        const cachedData = cache.get<any>(cacheKey);
+
+        if (cachedData) {
+            console.log('Cache hits customers search!');
+            return cachedData;
+        }
+
+        const customers = await searchCustomersByMembershipTypeRepository(membershipType);
+
+        if (customers === null) {
+            return null;
+        }
+
+        const customersWithoutPassword = customers.map(customer => {
+            const { password, ...customerWithoutPassword } = customer;
+            return customerWithoutPassword;
+        });
+
+        cache.set(cacheKey, customersWithoutPassword, 300);
+
+        return customersWithoutPassword;
+    } catch (error) {
+        console.error('Error in searchCustomersByMembershipTypeService: ', error);
+        return null;
+    }
 };
