@@ -146,3 +146,21 @@ export const deleteDownloadRepository = async(
         throw error;
     }
 };
+
+export const deleteDownloadsByCustomerIdRepository = async (customerId: string): Promise<boolean> => {
+    try {
+        const db: Db = await dbConnection();
+
+        if (!ObjectId.isValid(customerId)) {
+            throw new Error('Invalid customer ID');
+        }
+
+        const filter = { idCustomer: customerId };
+        const result = await db.collection('downloads').deleteMany(filter);
+
+        return result.deletedCount > 0;
+    } catch (error) {
+        console.error('Error deleting downloads by customer ID:', error);
+        return false;
+    }
+};
