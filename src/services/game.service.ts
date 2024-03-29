@@ -9,18 +9,30 @@ import { createGameRepository,
     updateGameRepository } from '../repositories/game.repository';
 import { PaginationOptions, SortOptions } from '../utils/interfaces/repositories/optionsRepository';
 
-    export const getAllGamesService = async (
-        paginationOptions: PaginationOptions,
-        sortOptions: SortOptions
-    ): Promise<Game[] | null> => {
-        try {
-            const games = await getAllGamesRepository(paginationOptions, sortOptions);
-            return games;
-        } catch (error) {
-            console.error('Error in getAllGamesService: ', error);
-            return null;
+export const getAllGamesService = async (
+    paginationOptions: PaginationOptions,
+    sortOptions: SortOptions
+): Promise<Game[] | null> => {
+    try {
+        const cacheKey = JSON.stringify({ paginationOptions, sortOptions });
+        const cachedCustomers = cache.get<Game[]>(cacheKey);
+
+        if (cachedCustomers) {
+            console.log('Cache hit for all customers!');
+            return cachedCustomers;
         }
-    };
+        
+        const games = await getAllGamesRepository(paginationOptions, sortOptions);
+        if (games !== null) {
+            cache.set(cacheKey, games, 300);
+        }
+
+        return games;
+    } catch (error) {
+        console.error('Error in getAllGamesService: ', error);
+        return null;
+    }
+};
 
 export const createGameService = async(game: Game): Promise<ObjectId | null> => {
     try {
